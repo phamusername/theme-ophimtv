@@ -109,7 +109,7 @@ class ThemeOphimtvServiceProvider extends ServiceProvider
                         'name' => 'body_attributes',
                         'label' => 'Body attributes',
                         'type' => 'text',
-                        'value' => 'class="active"',
+                        'value' => 'class="antialiased text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900"',
                         'tab' => 'Custom CSS'
                     ],
                     [
@@ -138,8 +138,30 @@ class ThemeOphimtvServiceProvider extends ServiceProvider
                         'label' => 'Footer',
                         'type' => 'code',
                         'value' => <<<EOT
-                        <div class="myui-foot clearfix"><div class="container min"><div class="row"><div class="col-12"><h1 style="font-size:100%"><span class="text-logo"><b>DONGCHILL.CO</b></span> Nơi cập nhật những bộ phim mới hot nhất hiện nay.</h1><p>DONGCHILL.CO nơi cung cấp cho người dùng những bộ phim chất lượng cao từ các quốc gia trên thế giới, bao gồm Hàn Quốc, Trung Quốc, Thái Lan và Nhật Bẚn.</p><p>DONGCHILL.CO cung cấp đa dạng thể loại phim, từ tình cẚm, hành động, giẚ tưởng đến kinh dị...</p><p>Ngoài ra, người dùng có thể dễ dàng tìm kiếm phim theo từng quốc gia, giúp cho việc tìm kiếm giẚi trí hoàn toàn dễ dàng.</p><p>Với những bộ phim chất lượng cao và đa dạng sự lựa chọn của website, các tín đồ film sẽ không thể bỏ qua trang web vô cùng hữu ích này.</p></div><!--div class="col-12"><ul><li>Liên hệ lên hệ quảng cáo telegram: </li></ul></div--></div></div></div>
-                        <div class="myui-foot clearfix"><div class="row"><div class="col-pd text-center"><p class="margin-0">© 2023 Copyright <a href="https://dongchill.co"><b>DONGCHILL.CO</b></a>. All Rights reserved.</p></div></div></div>
+                        <footer class="text-sm leading-6 mt-16 p-2 xl:p-0">
+                            <div class="container mx-auto pt-2 pb-28 border-t border-slate-200 text-slate-500 dark:border-slate-200/5">
+                                <p class="block"></p>
+                                <p>Tất cả nội dung của trang web này được thu thập từ các trang web video chính thống trên Internet và không cung cấp phát trực tuyến chính hãng. Nếu quyền lợi của bạn bị vi phạm, vui lòng thông báo cho chúng tôi, chúng tôi sẽ xóa nội dung vi phạm kịp thời, cảm ơn sự hợp tác của bạn!</p>
+                                <p></p>
+                                <div class="sm:flex justify-between pt-2">
+                                    <div class="mb-6 sm:mb-0 sm:flex">
+                                        <p>Copyright © 2024</p>
+                                        <p class="sm:ml-4 sm:pl-4 sm:border-l sm:border-slate-200 dark:sm:border-slate-200/5">
+                                            <a class="hover:text-slate-900 dark:hover:text-slate-400 ajax-load" href="/gioi-thieu">Giới thiệu</a>
+                                        </p>
+                                        <p class="sm:ml-4 sm:pl-4 sm:border-l sm:border-slate-200 dark:sm:border-slate-200/5">
+                                            <a class="hover:text-slate-900 dark:hover:text-slate-400 ajax-load" href="/khieu-nai-ban-quyen">Khiếu nại bản quyền</a>
+                                        </p>
+                                        <p class="sm:ml-4 sm:pl-4 sm:border-l sm:border-slate-200 dark:sm:border-slate-200/5">
+                                            <a class="hover:text-slate-900 dark:hover:text-slate-400 ajax-load" href="/api-document">API</a>
+                                        </p>
+                                        <p class="sm:ml-4 sm:pl-4 sm:border-l sm:border-slate-200 dark:sm:border-slate-200/5">
+                                            <a class="hover:text-slate-900 dark:hover:text-slate-400 ajax-load" href="/yeu-cau-phim">Yêu Cầu Phim</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </footer>
                         EOT,
                         'tab' => 'Custom HTML'
                     ],

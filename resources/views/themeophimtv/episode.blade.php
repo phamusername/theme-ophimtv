@@ -1,236 +1,554 @@
 @extends('themes::themeophimtv.layout')
 
 @section('content')
-    <style>
-        .video-footer {
-            margin-top: 5px;
-        }
-
-        .btn-active {
-            color: #fff !important;
-            background: #d9534f !important;
-            border-color: #d9534f !important;
-        }
-
-        .btn-sv {
-            margin-right: 5px;
-        }
-
-        .btn-sv:last-child {
-            margin-right: 0;
-        }
-
-        #player-loaded>div {
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-
-    <div class="video-p-first mt-3">
-        <div class="cc-warning text-center">
-            - Cách tìm kiếm phim trên Google: <b>"Tên phim + {{ request()->getHost() }}"</b><br>
+    <div class="container px-2 mx-auto">
+        <div class="flex items-center p-4 border-b border-slate-900/10 dark:border-slate-50/[0.06]">
+            <button type="button" class="text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300">
+                <span class="sr-only">Trang Chủ</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+                    class="w-6 h-6">
+                    <path
+                        d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z">
+                    </path>
+                </svg>
+            </button>
+            <ol class="ml-4 flex text-sm leading-6 overflow-x-auto overflow-ellipsis whitespace-nowrap min-w-0">
+                <li class="flex items-center" itemprop="itemListElement" itemscope="true"
+                    itemtype="http://schema.org/ListItem">
+                    <a itemprop="item" title="Trang chủ" class="ajax-load" href="/">
+                        <span class="text-slate-500 hover:text-sky-500 dark:text-slate-400 dark:hover:text-slate-300"
+                            itemprop="name">Trang chủ</span>
+                        <meta itemprop="position" value="0" content="1">
+                    </a>
+                    <svg width="3" height="6" aria-hidden="true" class="mx-3 overflow-visible text-slate-400">
+                        <path d="M0 0L3 3L0 6" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round"></path>
+                    </svg>
+                </li>
+                @foreach ($currentMovie->categories as $category)
+                    <li class="flex items-center" itemprop="itemListElement" itemscope="true"
+                        itemtype="http://schema.org/ListItem">
+                        <a itemprop="item" title="{{ $category->name }}" class="ajax-load" href="{{ $category->getUrl() }}">
+                            <span class="text-slate-500 hover:text-sky-500 dark:text-slate-400 dark:hover:text-slate-300"
+                                itemprop="name">{{ $category->name }}</span>
+                            <meta itemprop="position" value="3" content="2">
+                        </a>
+                        <svg width="3" height="6" aria-hidden="true" class="mx-3 overflow-visible text-slate-400">
+                            <path d="M0 0L3 3L0 6" fill="none" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round"></path>
+                        </svg>
+                    </li>
+                @endforeach
+                @foreach ($currentMovie->regions as $region)
+                    <li class="flex items-center" itemprop="itemListElement" itemscope="true"
+                        itemtype="http://schema.org/ListItem">
+                        <a itemprop="item" title="{{ $region->name }}" class="ajax-load" href="{{ $region->getUrl() }}">
+                            <span class="text-slate-500 hover:text-sky-500 dark:text-slate-400 dark:hover:text-slate-300"
+                                itemprop="name">{{ $region->name }}</span>
+                            <meta itemprop="position" value="3" content="2">
+                        </a>
+                        <svg width="3" height="6" aria-hidden="true" class="mx-3 overflow-visible text-slate-400">
+                            <path d="M0 0L3 3L0 6" fill="none" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round"></path>
+                        </svg>
+                    </li>
+                @endforeach
+                <li class="flex items-center" itemprop="itemListElement" itemscope="true"
+                    itemtype="http://schema.org/ListItem">
+                    <a itemprop="item" title="{{ $currentMovie->name }}" class="ajax-load"
+                        href="{{ $currentMovie->getUrl() }}">
+                        <span class="text-slate-500 hover:text-sky-500 dark:text-slate-400 dark:hover:text-slate-300"
+                            itemprop="name">{{ $currentMovie->name }}</span>
+                        <meta itemprop="position" value="3" content="2">
+                    </a>
+                </li>
+            </ol>
         </div>
-        @if ($currentMovie->showtimes && $currentMovie->showtimes != '')
-            <div class="myui-player__notice">Lịch chiếu: {!! strip_tags($currentMovie->showtimes) !!}</div>
-        @endif
-    </div>
-
-    <div id="main-player">
-        {{-- <div class="loader"></div> --}}
-        <div id="player-loaded"></div>
-    </div>
-    <div class="video-footer">
-        <script>
-            function detectMobile() {
-                const toMatch = [
-                    /Android/i,
-                    /webOS/i,
-                    /iPhone/i,
-                    /iPad/i,
-                    /iPod/i,
-                    /BlackBerry/i,
-                    /Windows Phone/i
-                ];
-
-                return toMatch.some((toMatchItem) => {
-                    return navigator.userAgent.match(toMatchItem);
-                });
-            }
-        </script>
-    </div>
-
-    <div id="ploption" class="text-center">
-        @foreach ($currentMovie->episodes->where('slug', $episode->slug)->where('server', $episode->server) as $server)
-            <a onclick="chooseStreamingServer(this)" data-type="{{ $server->type }}" data-id="{{ $server->id }}"
-                data-link="{{ $server->link }}" class="streaming-server current btn-sv btn btn-primary">
-                Server #{{ $loop->iteration }}
-            </a>
-        @endforeach
-    </div>
-
-    <div itemscope itemtype="http://schema.org/Movie">
-        <div class="rating-block text-center">
-            @include('themes::themeophimtv.inc.rating2')
-        </div>
-        <center style="padding:10px"><input type="text" id="searchBox" placeholder="Tìm tập phim..."
-                style="background: 0 0; border: 1px solid #fff; height: 32px; width: 200px; padding: 5px; color:#fff; border-radius: 3px !important">
-        </center>
-        <div class="row">
-            <div class="col-md-wide-7 col-xs-1 padding-0">
-                <div id="servers-container" class="myui-panel myui-panel-bg clearfix ">
-                    <div class="myui-panel-box clearfix">
-                        <div class="myui-panel_hd">
-                            <div class="myui-panel__head active bottom-line clearfix">
-                                <div class="title">Tập phim</div>
-                                <ul class="nav nav-tabs active">
-                                    @foreach ($currentMovie->episodes->sortBy([['server', 'asc']])->groupBy('server') as $server => $data)
-                                        <li class="{{ $loop->index == 0 ? 'active' : '' }}"><a
-                                                href="#tab_{{ $loop->index }}">{{ $server }}</a></li>
-                                    @endforeach
-                                </ul>
+        <div class="container mx-auto mt-2 px-8 py-2 w-full">
+            <div class="flex flex-col">
+                <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 space-y-2">
+                    <div class="bg-gray-100 dark:bg-slate-800 p-2 rounded-2xl md:flex flex-wrap">
+                        <div class="relative w-full h-full md:w-1/3 lg:w-1/6">
+                            <span style="display:block;">
+                                <img alt="{{ $currentMovie->name }} - {{ $currentMovie->origin_name }}"
+                                    src="{{ $currentMovie->getThumbUrl() }}" decoding="async" class="rounded-md w-full"
+                                    data-src="{{ $currentMovie->getThumbUrl() }}"
+                                    style="background-size:cover;background-image:url(&quot;data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=&quot;);background-position:0% 0%"></span>
+                            <div
+                                class="absolute bottom-0 space-x-2 text-center w-full bg-white dark:bg-black bg-opacity-40 dark:bg-opacity-80 py-2 m-0 rounded-t-none rounded-lg">
+                                <div data-scroll="#list_episode"
+                                    class="scroll cursor-pointer hover:bg-opacity-80 bg-violet-500 text-gray-50 dark:text-gray-50 inline-block px-1 py-1 rounded">
+                                    Xem Phim</div>
+                                <div data-scroll="#data_link"
+                                    class="scroll cursor-pointer hover:bg-opacity-80 bg-red-500 text-gray-50 dark:text-gray-50 inline-block px-1 py-1 rounded">
+                                    Lấy Nguồn</div>
+                                <div
+                                    class="cursor-pointer hover:bg-opacity-80 bg-blue-500 text-gray-50 dark:text-gray-50 inline-block px-1 py-1 rounded">
+                                    <a target="_blank" href="{{ $currentMovie->getUrl() }}"
+                                        title="API Phim {{ $currentMovie->name }}" rel="noopener noreferrer">API</a>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="tab-content myui-panel_bd">
-                            @foreach ($currentMovie->episodes->sortBy([['server', 'asc']])->groupBy('server') as $server => $data)
-                                <div class="tab-pane fade in clearfix {{ $loop->index == 0 ? 'active' : '' }}"
-                                    id="tab_{{ $loop->index }}">
-                                    <ul class="myui-content__list sort-list clearfix"
-                                        style="max-height: 300px; overflow: auto;">
-                                        @foreach ($data->sortByDesc('name', SORT_NATURAL)->groupBy('name') as $name => $item)
-                                            <li class="col-lg-8 col-md-7 col-sm-6 col-xs-4">
-                                                <a href="{{ $item->sortByDesc('type')->first()->getUrl() }}"
-                                                    class="btn btn-default @if ($item->contains($episode)) active @endif"
-                                                    title="{{ $name }}">{{ $name }}</a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endforeach
+                        <div class="w-full md:w-2/3 lg:w-5/6 pl-4 pt-0 mt-2 md:mt-0 text-sm md:text-base">
+                            <div class="text-center rounded-md">
+                                <h1 class="uppercase text-lg font-bold text-violet-500">{{ $currentMovie->name }}</h1>
+                                <h2 class="italic text-sky-500">{{ $currentMovie->origin_name }}</h2>
+                            </div>
+                            <div
+                                class="overflow-hidden lg:overflow-auto scrollbar:!w-1.5 scrollbar:!h-1.5 scrollbar:bg-transparent scrollbar-track:!bg-slate-100 scrollbar-thumb:!rounded scrollbar-thumb:!bg-slate-300 scrollbar-track:!rounded dark:scrollbar-track:!bg-slate-500/[0.16] dark:scrollbar-thumb:!bg-slate-500/50">
+                                <table class="w-full text-left border-collapse">
+                                    <tbody class="align-baseline">
+                                        <tr class="border-t border-slate-200 dark:border-slate-400/20">
+                                            <td translate="yes"
+                                                class="py-1 pr-2 leading-5 text-sky-500 whitespace-nowrap dark:text-sky-400">
+                                                Trạng thái</td>
+                                            <td translate="yes"
+                                                class="py-1 pl-2 leading-5 text-indigo-600 whitespace-normal dark:text-indigo-300">
+                                                {{ $currentMovie->episode_current }}</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-200 dark:border-slate-400/20">
+                                            <td translate="yes"
+                                                class="py-1 pr-2 leading-5 text-sky-500 whitespace-nowrap dark:text-sky-400">
+                                                Số tập</td>
+                                            <td translate="yes"
+                                                class="py-1 pl-2 leading-5 text-indigo-600 whitespace-normal dark:text-indigo-300">
+                                                {{ $currentMovie->episode_total }}</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-200 dark:border-slate-400/20">
+                                            <td translate="yes"
+                                                class="py-1 pr-2 leading-5 text-sky-500 whitespace-nowrap dark:text-sky-400">
+                                                Thời Lượng</td>
+                                            <td translate="yes"
+                                                class="py-1 pl-2 leading-5 text-indigo-600 whitespace-normal dark:text-indigo-300">
+                                                {{ $currentMovie->episode_time }}</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-200 dark:border-slate-400/20">
+                                            <td translate="yes"
+                                                class="py-1 pr-2 leading-5 text-sky-500 whitespace-nowrap dark:text-sky-400">
+                                                Chất Lượng</td>
+                                            <td translate="yes"
+                                                class="py-1 pl-2 leading-5 text-indigo-600 whitespace-normal dark:text-indigo-300">
+                                                {{ $currentMovie->quality }}</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-200 dark:border-slate-400/20">
+                                            <td translate="yes"
+                                                class="py-1 pr-2 leading-5 text-sky-500 whitespace-nowrap dark:text-sky-400">
+                                                Ngôn Ngữ</td>
+                                            <td translate="yes"
+                                                class="py-1 pl-2 leading-5 text-indigo-600 whitespace-normal dark:text-indigo-300">
+                                                {{ $currentMovie->language }}</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-200 dark:border-slate-400/20">
+                                            <td translate="yes"
+                                                class="py-1 pr-2 leading-5 text-sky-500 whitespace-nowrap dark:text-sky-400">
+                                                Đạo
+                                                Diễn</td>
+                                            <td translate="yes"
+                                                class="py-1 pl-2 leading-5 text-indigo-600 whitespace-normal dark:text-indigo-300">
+                                                {!! count($currentMovie->directors)
+                                                    ? $currentMovie->directors->map(function ($director) {
+                                                            return '' . $director->name . '';
+                                                        })->implode(', ')
+                                                    : 'Đoán xem' !!}
+                                            </td>
+                                        </tr>
+                                        <tr class="border-t border-slate-200 dark:border-slate-400/20">
+                                            <td translate="yes"
+                                                class="py-1 pr-2 leading-5 text-sky-500 whitespace-nowrap dark:text-sky-400">
+                                                Diễn Viên</td>
+                                            <td translate="yes"
+                                                class="py-1 pl-2 leading-5 text-indigo-600 whitespace-normal dark:text-indigo-300">
+                                                {!! count($currentMovie->actors)
+                                                    ? $currentMovie->actors->map(function ($actor) {
+                                                            return '' . $actor->name . '';
+                                                        })->implode(', ')
+                                                    : 'Đoán xem' !!}
+                                            </td>
+                                        </tr>
+                                        <tr class="border-t border-slate-200 dark:border-slate-400/20">
+                                            <td translate="yes"
+                                                class="py-1 pr-2 leading-5 text-sky-500 whitespace-nowrap dark:text-sky-400">
+                                                Danh sách</td>
+                                            <td translate="yes"
+                                                class="py-1 pl-2 leading-5 text-indigo-600 whitespace-normal dark:text-indigo-300">
+                                                @if ($currentMovie->type == 'series')
+                                                    Phim bộ
+                                                @else
+                                                    Phim lẻ
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr class="border-t border-slate-200 dark:border-slate-400/20">
+                                            <td translate="yes"
+                                                class="py-1 pr-2 leading-5 text-sky-500 whitespace-nowrap dark:text-sky-400">
+                                                Thể loại</td>
+                                            <td translate="yes"
+                                                class="py-1 pl-2 leading-5 text-indigo-600 whitespace-normal dark:text-indigo-300">
+                                                {!! $currentMovie->categories->map(function ($category) {
+                                                        return '' . $category->name . '';
+                                                    })->implode(', ') !!}
+                                            </td>
+                                        </tr>
+                                        <tr class="border-t border-slate-200 dark:border-slate-400/20">
+                                            <td translate="yes"
+                                                class="py-1 pr-2 leading-5 text-sky-500 whitespace-nowrap dark:text-sky-400">
+                                                Năm phát hành</td>
+                                            <td translate="yes"
+                                                class="py-1 pl-2 leading-5 text-indigo-600 whitespace-normal dark:text-indigo-300">
+                                                {{ $currentMovie->publish_year }}
+                                            </td>
+                                        </tr>
+                                        <tr class="border-t border-slate-200 dark:border-slate-400/20">
+                                            <td translate="yes"
+                                                class="py-1 pr-2 leading-5 text-sky-500 whitespace-nowrap dark:text-sky-400">
+                                                Quốc gia</td>
+                                            <td translate="yes"
+                                                class="py-1 pl-2 leading-5 text-indigo-600 whitespace-normal dark:text-indigo-300">
+                                                {!! $currentMovie->regions->map(function ($region) {
+                                                        return '' . $region->name . '';
+                                                    })->implode(', ') !!}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="sticky bottom-0 h-px -mt-px bg-slate-200 dark:bg-slate-400/20"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div style="border: 1px solid #b8b612; font-size: 15px" class="myui-panel myui-panel-bg clearfix">
-                    - Hãy thử chuyển sang server khác (nếu có) nếu bạn gặp tình trạng giật/lag khi xem phim.<br>
-                    - Bạn nên sử dụng Trình duyệt Chrome để xem phim tối ưu nhất!<br>
-                    - Tham gia nhóm <a href="https://t.me/+z49SfoKsTZ00OGRl" target="_blank" rel="nofollow noopener">
-                        <span style="color:#e62117"><strong>Telegram</strong></span></a> của chúng mình để được hỗ trợ kịp
-                    thời nha.
-                </div>
-                <div class="myui-panel myui-panel-bg clearfix">
-                    <div class="myui-panel-box clearfix">
-                        <div class="myui-panel_hd">
-                            <div class="myui-panel__head clearfix height-auto">
-                                <h1 class="title" itemprop="name">{{ $currentMovie->name }} - Tập {{ $episode->name }}
-                                </h1>
-                                <h2 class="title2">{{ $currentMovie->origin_name }}</h2>
-                            </div>
-                        </div>
-                        <div class="myui-panel_bd">
-                            <div class="col-pd text-collapse content">
-                                <div class="sketch content" itemprop="description">
-                                    <h3>{{ $currentMovie->name }}, {{ $currentMovie->origin_name }}</h3>
-                                    {!! $currentMovie->content !!}
+                    <div class="w-full">
+                        <div class="w-full p-2 space-y-2 mx-auto bg-gray-100 dark:bg-slate-800 rounded-2xl">
+                            <div class="card-collapse">
+                                <button
+                                    class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75"
+                                    type="button" aria-expanded="true"><span>Nội dung phim</span><svg
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                        aria-hidden="true" class="transform rotate-180 w-5 h-5 text-sky-500">
+                                        <path fill-rule="evenodd"
+                                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                            clip-rule="evenodd">
+                                        </path>
+                                    </svg>
+                                </button>
+                                <div class="card-collapse-content px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200">
+                                    <article id="content">
+                                        {!! strip_tags($currentMovie->content) !!}
+                                    </article>
                                 </div>
-                                <div id="tags"><label>Keywords:</label>
-                                    <div class="tag-list">
-                                        @foreach ($currentMovie->tags as $tag)
-                                            <h3>
-                                                <strong>
-                                                    <a href="{{ $tag->getUrl() }}" title="{{ $tag->name }}"
-                                                        rel='tag'>
-                                                        {{ $tag->name }}
-                                                    </a>
-                                                </strong>
-                                            </h3>
-                                        @endforeach
+                            </div>
+                            <div class="mt-0 card-collapse" id="list_episode">
+                                <button
+                                    class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200"
+                                    type="button" aria-expanded="true"><span>Xem Phim</span><svg
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                        aria-hidden="true" class="transform rotate-180 w-5 h-5 text-sky-500">
+                                        <path fill-rule="evenodd"
+                                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                <div class="card-collapse-content px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200">
+                                    <div class="w-full px-2 sm:px-0">
+                                        <div>
+                                            @foreach ($currentMovie->episodes->groupBy('server') as $server => $data)
+                                                <div class="py-2 uppercase font-bold">Server:
+                                                    <span class="text-violet-500">{{ $server }}</span>
+                                                </div>
+                                                <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-16 gap-2">
+                                                    @foreach ($data->sortBy('name', SORT_NATURAL)->groupBy('name') as $name => $item)
+                                                        @foreach ($item as $episode)
+                                                            @if ($episode->type !== 'm3u8')
+                                                                <a class="text-center overflow-hidden overflow-ellipsis whitespace-nowrap px-5 py-1 rounded shadow-md bg-gray-400 text-gray-50 hover:bg-violet-500 dark:bg-slate-600 dark:hover:bg-violet-600"
+                                                                    title="{{ $name }}" target="_blank"
+                                                                    href="{{ $episode->link }}">
+                                                                    {{ $name }}
+                                                                </a>
+                                                            @endif
+                                                        @endforeach
+                                                    @endforeach
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="card-collapse">
+                                <button
+                                    class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75"
+                                    \ type="button" aria-expanded="true"
+                                    aria-controls="headlessui-disclosure-panel-9"><span>Định dạng nguồn</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                        aria-hidden="true" class="transform rotate-180 w-5 h-5 text-sky-500">
+                                        <path fill-rule="evenodd"
+                                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                            clip-rule="evenodd">
+                                        </path>
+                                    </svg>
+                                </button>
+                                <div class="card-collapse-content px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200"
+                                    id="data_link">
+                                    <div class="lg:flex gap-x-2 mb-2">
+                                        <label class>Định dạng hiển thị: </label>
+                                        <div class="form-check form-check-inline">
+                                            <input id="showType1"
+                                                class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                                type="radio" name="typeShow" checked value="1">
+                                            <label class="form-check-label inline-block text-sky-500"
+                                                for="showType1">Tập|Link</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input id="showType2"
+                                                class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                                type="radio" name="typeShow" value="2">
+                                            <label class="form-check-label inline-block text-sky-500"
+                                                for="showType2">Tập|Slug|Link</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input id="showType3"
+                                                class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                                type="radio" name="typeShow" value="3">
+                                            <label class="form-check-label inline-block text-sky-500"
+                                                for="showType3">Link</label>
+                                        </div>
+                                    </div>
+                                    <div class="lg:flex gap-x-2 mb-2">
+                                        <label class>Sắp xếp: </label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                            aria-hidden="true" id="sort"
+                                            class="text-sky-500 hover:text-violet-500 cursor-pointer w-6 h-6 sort_data">
+                                            <path id="sortIconPath"
+                                                d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 card-collapse">
+                                <button
+                                    class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75"
+                                    type="button" aria-expanded="true">
+                                    <span>Nguồn Embed</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                        aria-hidden="true" class="transform rotate-180 w-5 h-5 text-sky-500">
+                                        <path fill-rule="evenodd"
+                                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                <div
+                                    class="card-collapse-content relative px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200">
+                                    <div class="w-full max-w-3xl px-2 sm:px-0">
+                                        <div class="flex p-1 space-x-1 bg-blue-900/20 rounded-xl" role="tablist"
+                                            aria-orientation="horizontal">
+                                            @foreach ($currentMovie->episodes->sortBy([['server', 'desc']])->groupBy('server') as $server => $data)
+                                                <button
+                                                    class="{{ $loop->index == 0 ? 'server p-2 text-sm leading-5 font-medium dark:text-blue-500 rounded-lg bg-white dark:bg-slate-900 shadow' : 'server p-2 text-sm leading-5 font-medium dark:text-blue-500 rounded-lg text-blue-700 hover:bg-white/[0.12] hover:text-white' }}"
+                                                    data-server="{{ $server }}" data-type="embed" role="tab"
+                                                    type="button"
+                                                    aria-selected="{{ $loop->index == 0 ? 'true' : 'false' }}"
+                                                    tabindex="{{ $loop->index == 0 ? '0' : '-1' }}">
+                                                    {{ $server }}
+                                                </button>
+                                            @endforeach
+                                        </div>
+                                        <div class="pt-2">
+                                            <div role="tabpanel" tabindex="0" aria-labelledby="headlessui-tabs-tab-12">
+                                                <textarea id="area_embed"
+                                                    class="form-control block w-full px-3 py-1.5 text-sm font-normal bg-white dark:bg-slate-900 bg-clip-padding border border-solid border-slate-700 rounded transition ease-in-out m-0 focus:border-blue-600 focus:outline-none"
+                                                    rows="10" readonly></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 card-collapse">
+                                <button
+                                    class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75"
+                                    type="button" aria-expanded="true">
+                                    <span>Nguồn m3u8</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                        aria-hidden="true" class="transform rotate-180 w-5 h-5 text-sky-500">
+                                        <path fill-rule="evenodd"
+                                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                <div
+                                    class="card-collapse-content relative px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200">
+                                    <div class="w-full max-w-3xl px-2 sm:px-0">
+                                        <div class="flex p-1 space-x-1 bg-blue-900/20 rounded-xl" role="tablist"
+                                            aria-orientation="horizontal">
+                                            @foreach ($currentMovie->episodes->sortBy([['server', 'desc']])->groupBy('server') as $server => $data)
+                                                <button
+                                                    class="{{ $loop->index == 0 ? 'server-m3u8 p-2 text-sm leading-5 font-medium dark:text-blue-500 rounded-lg bg-white dark:bg-slate-900 shadow' : 'server-m3u8 p-2 text-sm leading-5 font-medium dark:text-blue-500 rounded-lg text-blue-700 hover:bg-white/[0.12] hover:text-white' }}"
+                                                    data-server="{{ $server }}" data-type="m3u8" role="tab"
+                                                    type="button"
+                                                    aria-selected="{{ $loop->index == 0 ? 'true' : 'false' }}"
+                                                    tabindex="{{ $loop->index == 0 ? '0' : '-1' }}">
+                                                    {{ $server }}
+                                                </button>
+                                            @endforeach
+                                        </div>
+                                        <div class="pt-2">
+                                            <div role="tabpanel" tabindex="0" aria-labelledby="headlessui-tabs-tab-12">
+                                                <textarea id="area_m3u8"
+                                                    class="form-control block w-full px-3 py-1.5 text-sm font-normal bg-white dark:bg-slate-900 bg-clip-padding border border-solid border-slate-700 rounded transition ease-in-out m-0 focus:border-blue-600 focus:outline-none"
+                                                    rows="10" readonly></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                // Pass the episodes data from PHP to JavaScript
+                                const episodes = @json($currentMovie->episodes->groupBy('server'));
+
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    let serverEmbed = localStorage.getItem('selectedServerEmbed') || $('.server').first().data('server');
+                                    let serverM3u8 = localStorage.getItem('selectedServerM3u8') || $('.server-m3u8').first().data('server');
+                                    const buttonsEmbed = document.querySelectorAll('.server');
+                                    const buttonsM3u8 = document.querySelectorAll('.server-m3u8');
+                                    const textareaEmbed = document.getElementById('area_embed');
+                                    const textareaM3u8 = document.getElementById('area_m3u8');
+                                    const typeShowInputs = document.querySelectorAll('.type_show');
+                                    let sortOrder = localStorage.getItem('sortOrder') || 'asc';
+
+                                    // Restore selected typeShow
+                                    const savedTypeShow = localStorage.getItem('selectedTypeShow');
+                                    if (savedTypeShow) {
+                                        document.querySelector(`input[name="typeShow"][value="${savedTypeShow}"]`).checked = true;
+                                    }
+
+                                    // Update sort icon based on saved sortOrder
+                                    const sortIconPath = document.getElementById('sortIconPath');
+                                    if (sortIconPath) {
+                                        if (sortOrder === 'desc') {
+                                            sortIconPath.setAttribute('d',
+                                                'M3 17a1 1 0 000-2h11a1 1 0 100 2H3zM3 13a1 1 0 000-2h7a1 1 0 100 2H3zM3 9a1 1 0 100-2h4a1 1 0 100 2H3zM15 12a1 1 0 10-2 0v-5.586l-1.293 1.293a1 1 0 00-1.414-1.414l3-3a1 1 0 001.414 0l3 3a1 1 0 00-1.414 1.414L15 6.414V12z'
+                                                );
+                                        }
+                                    }
+
+                                    function render_data_link(server, type = 'embed') {
+                                        let data = episodes[server];
+                                        let result = '';
+                                        let typeShow = document.querySelector('input[name="typeShow"]:checked').value;
+
+                                        if (sortOrder === 'desc') {
+                                            data = [...data].reverse(); // Create a new reversed array
+                                        }
+
+                                        data.forEach(element => {
+                                            if (type === 'embed' && element.type !== 'm3u8') {
+                                                if (typeShow == '1') {
+                                                    result += `${element.name}|${element.link}\n`;
+                                                } else if (typeShow == '2') {
+                                                    result += `${element.name}|${element.slug}|${element.link}\n`;
+                                                } else if (typeShow == '3') {
+                                                    result += `${element.link}\n`;
+                                                }
+                                            } else if (type === 'm3u8' && element.type === 'm3u8') {
+                                                if (typeShow == '1') {
+                                                    result += `${element.name}|${element.link}\n`;
+                                                } else if (typeShow == '2') {
+                                                    result += `${element.name}|${element.slug}|${element.link}\n`;
+                                                } else if (typeShow == '3') {
+                                                    result += `${element.link}\n`;
+                                                }
+                                            }
+                                        });
+
+                                        if (type === 'embed') {
+                                            textareaEmbed.value = result;
+                                        } else {
+                                            textareaM3u8.value = result;
+                                        }
+                                    }
+
+                                    buttonsEmbed.forEach(button => {
+                                        button.addEventListener('click', function() {
+                                            serverEmbed = this.getAttribute('data-server');
+                                            localStorage.setItem('selectedServerEmbed', serverEmbed);
+
+                                            // Remove active class from all buttons
+                                            buttonsEmbed.forEach(btn => {
+                                                btn.classList.remove('bg-white', 'dark:bg-slate-900', 'shadow');
+                                                btn.classList.add('text-blue-700', 'hover:bg-white/[0.12]',
+                                                    'hover:text-white');
+                                            });
+
+                                            // Add active class to the clicked button
+                                            this.classList.add('bg-white', 'dark:bg-slate-900', 'shadow');
+                                            this.classList.remove('text-blue-700', 'hover:bg-white/[0.12]',
+                                                'hover:text-white');
+
+                                            // Update the textarea content
+                                            render_data_link(serverEmbed, 'embed');
+                                        });
+                                    });
+
+                                    buttonsM3u8.forEach(button => {
+                                        button.addEventListener('click', function() {
+                                            serverM3u8 = this.getAttribute('data-server');
+                                            localStorage.setItem('selectedServerM3u8', serverM3u8);
+
+                                            // Remove active class from all buttons
+                                            buttonsM3u8.forEach(btn => {
+                                                btn.classList.remove('bg-white', 'dark:bg-slate-900', 'shadow');
+                                                btn.classList.add('text-blue-700', 'hover:bg-white/[0.12]',
+                                                    'hover:text-white');
+                                            });
+
+                                            // Add active class to the clicked button
+                                            this.classList.add('bg-white', 'dark:bg-slate-900', 'shadow');
+                                            this.classList.remove('text-blue-700', 'hover:bg-white/[0.12]',
+                                                'hover:text-white');
+
+                                            // Update the textarea content
+                                            render_data_link(serverM3u8, 'm3u8');
+                                        });
+                                    });
+
+                                    typeShowInputs.forEach(input => {
+                                        input.addEventListener('change', function() {
+                                            localStorage.setItem('selectedTypeShow', this.value);
+                                            render_data_link(serverEmbed, 'embed');
+                                            render_data_link(serverM3u8, 'm3u8');
+                                        });
+                                    });
+
+                                    document.getElementById('sort').addEventListener('click', function() {
+                                        sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
+                                        localStorage.setItem('sortOrder', sortOrder);
+
+                                        // Toggle sort icon path
+                                        if (sortOrder === 'asc') {
+                                            sortIconPath.setAttribute('d',
+                                                'M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z'
+                                                );
+                                        } else {
+                                            sortIconPath.setAttribute('d',
+                                                'M3 17a1 1 0 000-2h11a1 1 0 100 2H3zM3 13a1 1 0 000-2h7a1 1 0 100 2H3zM3 9a1 1 0 100-2h4a1 1 0 100 2H3zM15 12a1 1 0 10-2 0v-5.586l-1.293 1.293a1 1 0 00-1.414-1.414l3-3a1 1 0 001.414 0l3 3a1 1 0 00-1.414 1.414L15 6.414V12z'
+                                                );
+                                        }
+
+                                        render_data_link(serverEmbed, 'embed');
+                                        render_data_link(serverM3u8, 'm3u8');
+                                    });
+
+                                    // Initial render for the selected or first server
+                                    render_data_link(serverEmbed, 'embed');
+                                    render_data_link(serverM3u8, 'm3u8');
+                                });
+                            </script>
+
                         </div>
                     </div>
                 </div>
-
-                <div class="myui-panel myui-panel-bg clearfix">
-                    <style>
-                        @media only screen and (max-width: 767px) {
-                            .fb-comments {
-                                width: 100% !important
-                            }
-
-                            .fb-comments iframe[style] {
-                                width: 100% !important
-                            }
-
-                            .fb-like-box {
-                                width: 100% !important
-                            }
-
-                            .fb-like-box iframe[style] {
-                                width: 100% !important
-                            }
-
-                            .fb-comments span {
-                                width: 100% !important
-                            }
-
-                            .fb-comments iframe span[style] {
-                                width: 100% !important
-                            }
-
-                            .fb-like-box span {
-                                width: 100% !important
-                            }
-
-                            .fb-like-box iframe span[style] {
-                                width: 100% !important
-                            }
-                        }
-
-                        .fb-comments,
-                        .fb-comments span {
-                            background-color: #eee
-                        }
-
-                        .fb-comments {
-                            margin-bottom: 20px
-                        }
-                    </style>
-                    <div style="color:white;font-weight:bold;padding:5px; border: 1px solid #dd163b">
-                        Quý khán giả tuyệt đối không được nhấn vào các đường link lạ trong phần bình luận để tránh trường hợp bị hack tài khoản Facebook, lộ lọt thông tin cá nhân!
-                    </div>
-                    <div data-order-by="reverse_time" id="commit-99011102" class="fb-comments"
-                        data-href="{{ $currentMovie->getUrl() }}" data-width="" data-numposts="10"></div>
-                    <script>
-                        document.getElementById("commit-99011102").dataset.width = $("#commit-99011102").parent().width();
-                    </script>
-                </div>
-            </div>
-
-            <div class="col-md-wide-3 col-xs-1 myui-sidebar hidden-sm hidden-xs">
-                @include('themes::themeophimtv.sidebar')
             </div>
         </div>
     </div>
-
-    {{-- Load player --}}
-    <script>
-        $('.btn-sv').on('click', function() {
-            var __this = $(this);
-
-            __this.parent().find('a.btn').removeClass('btn-active');
-            __this.addClass('btn-active');
-        });
-
-        function removeAds(__this) {
-            __this.closest('.player_ads').hide();
-        }
-    </script>
 @endsection
 
 @push('scripts')
@@ -486,40 +804,5 @@
                 servers[0].click();
             }
         });
-    </script>
-    <script>
-        let searchBtn = document.getElementById("searchBox");
-
-
-
-        let lists = document.getElementsByClassName("sort-list");
-        // 		let list = document.getElementsByClassName("episodes")[0].getElementsByTagName("li");
-
-        searchBtn.addEventListener("click", searchList);
-        searchBox.addEventListener("keyup", searchList);
-
-
-        function searchList() {
-
-            let searchTerm = searchBox.value.toLowerCase();
-
-            for (let j = 0; j < lists.length; j++) {
-
-                list = lists[j].getElementsByTagName("li");
-
-
-                for (let i = 0; i < list.length; i++) {
-                    let item = list[i].getElementsByTagName('a')[0].innerHTML.toLowerCase();
-
-                    if (item.indexOf(searchTerm) > -1) {
-                        list[i].style.display = "";
-
-                    } else {
-                        list[i].style.display = "none";
-                    }
-                }
-            }
-
-        }
     </script>
 @endpush

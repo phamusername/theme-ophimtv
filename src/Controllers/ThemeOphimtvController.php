@@ -12,6 +12,7 @@ use Ophim\Core\Models\Episode;
 use Ophim\Core\Models\Movie;
 use Ophim\Core\Models\Region;
 use Ophim\Core\Models\Tag;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Cache;
 
@@ -59,8 +60,13 @@ class ThemeOphimtvController
                 'section_name' => "Tìm kiếm phim: $request->search"
             ]);
         }
+
+        // Get the total count of movies
+        $count_movies = DB::table('movies')->count();
+
         return view('themes::themeophimtv.index', [
-            'title' => Setting::get('site_homepage_title')
+            'title' => Setting::get('site_homepage_title'),
+            'count_movies' => $count_movies
         ]);
     }
 
@@ -84,6 +90,15 @@ class ThemeOphimtvController
     {
         /** @var Movie */
         $movie = Movie::fromCache()->find($request->movie ?: $request->id);
+        if(count($movie->episodes)) {
+            $episode = $movie->episodes
+                ->sortBy([['server', 'asc']])
+                ->groupBy('server')
+                ->first()
+                ->sortByDesc('name', SORT_NATURAL)
+                ->groupBy('name')
+                ->first();
+        } else $episode = null;
 
         if (is_null($movie)) abort(404);
 
@@ -101,10 +116,11 @@ class ThemeOphimtvController
             Cache::put($movie_related_cache_key, $movie_related, setting('site_cache_ttl', 5 * 60));
         }
 
-        return view('themes::themeophimtv.single', [
+        return view('themes::themeophimtv.episode', [
             'currentMovie' => $movie,
             'title' => $movie->getTitle(),
-            'movie_related' => $movie_related
+            'movie_related' => $movie_related,
+            'episode' => $episode ? $episode->sortByDesc("type")->first() : null
         ]);
     }
 
@@ -162,6 +178,9 @@ class ThemeOphimtvController
             'section_name' => "Phim thể loại $category->name"
         ]);
     }
+
+
+
 
     public function getMovieOfRegion(Request $request)
     {

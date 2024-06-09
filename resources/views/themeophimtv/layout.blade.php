@@ -10,103 +10,47 @@
 @endphp
 
 @push('header')
-    {{-- @if (!(new \Jenssegers\Agent\Agent())->isDesktop())
-        <link rel="stylesheet" type="text/css" href="/themes/ophimtv/css/ipad.css?v=1.0.5" />
-    @endif --}}
-
     <link href="{{ url('/') }}" rel="alternate" hreflang="vi">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"
-        integrity="sha512-AFwxAkWdvxRd9qhYYp1qbeRZj6/iTNmJ2GFwcxsMOzwwTaRwz2a/2TX225Ebcj3whXte1WGQb38cXE5j7ZQw3g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <link href="/themes/ophimtv/static/css/main.css?v=5" rel="stylesheet" media="all">
-
     <script>
-        function detectMob() {
-            const toMatch = [
-                /Android/i,
-                /webOS/i,
-                /iPhone/i,
-                /iPad/i,
-                /iPod/i,
-                /BlackBerry/i,
-                /Windows Phone/i
-            ];
-
-            return toMatch.some((toMatchItem) => {
-                return navigator.userAgent.match(toMatchItem);
-            });
-        }
+        try {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia(
+                    '(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.add('light')
+            }
+        } catch (_) {}
     </script>
-
     <style>
-        #star i {
-            color: orange
+        .dark .close_menu_mb svg {
+            fill: #d9d1d1;
         }
 
-        .flickity-prev-next-button {
-            width: 40px;
-            height: 50px;
+        .page-item.disabled .page-link {
+            display: none !important;
         }
-
-        .flickity-prev-next-button svg {
-            vertical-align: middle !important;
-        }
-
-        @media all and (min-width: 813px) {
-
-            .m-nav,
-            .m-nav-over {
-                display: none !important;
-            }
-        }
-
-        @media screen and (max-width: 800px) {
-            .myui-header__logo .logo {
-                height: 50px !important;
-                width: 120px !important;
-                background-position: center center !important;
-            }
-        }
-
-        @if ($logo)
-            .myui-header__logo .logo {
-                background: url({{ $logo }}) no-repeat;
-                font-size: 1.5em;
-                color: #fff !important;
-                font-weight: 700;
-                background-size: contain;
-                display: block;
-                width: 229px;
-                height: 60px;
-                text-indent: -9999px;
-            }
-        @endif
     </style>
+    <link href="/themes/ophimtv/static/css/main.css" rel="stylesheet" media="all">
 @endpush
 
 @section('body')
-    @include('themes::themeophimtv.inc.header')
-
-    <div class="container">
-        <div id="top_ads"></div>
-
-        @if (get_theme_option('ads_header'))
-            {!! get_theme_option('ads_header') !!}
-        @endif
-
-        <div class="row">
-            {{-- @yield('slider_recommended')
-            <div class="clear"></div> --}}
-
-            @yield('breadcrumb')
-            @yield('content')
+    <div class="absolute z-20 top-0 inset-x-0 flex justify-center overflow-hidden pointer-events-none">
+        <div class="w-[108rem] flex-none flex justify-end">
+            <picture>
+                <img src="/themes/ophimtv/static/img/bg-light.png" alt=""
+                    class="w-[71.75rem] flex-none max-w-none dark:hidden">
+            </picture>
+            <picture>
+                <img src="/themes/ophimtv/static/img/bg-dark.png" alt=""
+                    class="w-[90rem] flex-none max-w-none hidden dark:block">
+            </picture>
         </div>
-        @if (get_theme_option('ads_preload'))
-            {!! get_theme_option('ads_preload') !!}
-        @endif
     </div>
+    @include('themes::themeophimtv.inc.header')
+    @yield('content')
+    {!! get_theme_option('footer') !!}
+    @include('themes::themeophimtv.inc.header_mobile')
 @endsection
 
 @section('footer')
@@ -122,101 +66,19 @@
             </div>
         </div>
     @endif
-
-    {!! get_theme_option('footer') !!}
-
-    <script src="/themes/ophimtv/efc0d744/yii.js"></script>
-    <script src="/themes/ophimtv/static/js/flickity.smart.min.js"></script>
-    <script src="/themes/ophimtv/static/js/main.js?v=4"></script>
-    {{-- <script src="/themes/ophimtv/js/ads_xx.js?v=7"></script> --}}
-
-    <div id="footer_fixed_ads"></div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-    <div id="fb-root"></div>
-
     <script>
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId: '{{ setting('social_facebook_app_id') }}',
-                xfbml: true,
-                version: 'v5.0'
-            });
-            FB.AppEvents.logPageView();
-        };
-
-        (function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {
-                return;
+        const Hn_Framework = {
+            ele: '#content',
+            url: window.location.href,
+            _token: 'xAklGemYto9SjgFFwvVrfhC02BWLUju8tHTfy17O',
+            settings: {
+                dev: 1,
+                top: 80,
             }
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "https://connect.facebook.net/vi_VN/sdk.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
+        }
     </script>
-
-    <script>
-        $('body').on('click', '.nav-tabs li a', function() {
-            var tabactive = $(this).attr('href');
-            $(this).closest('.nav-tabs').find('li').removeClass('active');
-            $(this).parent().addClass('active');
-            $('body').find('.myui-panel_bd .tab-pane').removeClass('active');
-            $('body').find(tabactive).addClass('active');
-
-            return false;
-        });
-    </script><!--script src="https://api.flygame.io/sdk/widget/chill_tv.1856.js" async></script-->
-
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://phim.nguonc.com/public/js/plugins/cute-alert/cute-alert.js" defer></script>
+    <script src="/themes/ophimtv/static/js/main.js?ver=1.0.0" referrerpolicy="origin"></script>
     {!! setting('site_scripts_google_analytics') !!}
-    <script>
-        jQuery(document).ready(function() {
-            let timeoutID = null;
-            $("input[name=search]").keyup(function(e) {
-                clearTimeout(timeoutID);
-                var search = e.target.value;
-                if (search.length <= 2) {
-                    $(".search-suggest").hide();
-                    return false;
-                }
-                timeoutID = setTimeout(() => searching(search), 0)
-            });
-
-            function searching(search) {
-                $.ajax({
-                    type: "get",
-                    url: "/search/" + search,
-                    dataType: "json",
-                    success: function(response) {
-                        let results = "";
-                        $(".search-suggest").show();
-                        results +=
-                            '<ul style="z-index: 100; display: block;" class="autocomplete-list">';
-                        results += '<li class="">Kết quả tìm kiếm cho từ khóa: <span>' + search +
-                            '</span></li>';
-                        for (let i = 0; i < response.data.length; i++) {
-                            const element = response.data[i];
-                            let img = `<img src="${element['thumb_url']}" alt="${element['name']}">`;
-                            let name = `<p>${element['name']}</p>`;
-                            results +=
-                                '<div class="list-movie-ajax"><div class="movie-item"><a href="' +
-                                element["url"] + '" title="' + element["name"] +
-                                ' class="ajax-thumb""><img class="search-img" src="' + element[
-                                    "thumb_url"] + '" alt="' + element["name"] +
-                                '"><div class="info"><div class="movie-title-1">' + element["name"] +
-                                '</div><div class="movie-title-2">' + element["origin_name"] + ' (' +
-                                element["publish_year"] + ')</div><div class="movie-title-chap">' +
-                                element["episode_current"] + ' ' + element["language"] +
-                                '</div></div></a></div></div>';;
-                        }
-                        results +=
-                            '<li class="ss-bottom" style="padding: 0;border-bottom: none;display: block;width: 100%;height: 40px;line-height: 40px; background: #f44336; color: #fff; font-weight: 700;text-align: center;"><a href="/?search=' +
-                            search + '">Nhấn enter để tìm kiếm</a></li>';
-                        $(".search-suggest").html(results);
-                    }
-                });
-            }
-        });
-    </script>
 @endsection

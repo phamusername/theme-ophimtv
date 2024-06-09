@@ -79,28 +79,24 @@
         }
         return $data;
     });
-    $phimbomoi = Cache::remember('site.movies.phimbomoi', setting('site_cache_ttl', 5 * 60), function () {
-        return Movie::where('type', 'series')
-            ->limit('12')
-            ->orderBy('updated_at', 'desc')
-            ->get();
-    });
 
-    $phimlemoi = Cache::remember('site.movies.phimlemoi', setting('site_cache_ttl', 5 * 60), function () {
-        return Movie::where('type', 'single')
-            ->limit('12')
-            ->orderBy('updated_at', 'desc')
-            ->get();
-    });
+    $years = Cache::remember(
+        'all_years',
+        \Backpack\Settings\app\Models\Setting::get('site_cache_ttl', 5 * 60),
+        function () {
+            return \Ophim\Core\Models\Movie::select('publish_year')->distinct()->pluck('publish_year')->sortDesc();
+        },
+    );
 
 @endphp
 
 @section('content')
-    <div class="row">
-        @include('themes::themeophimtv.inc.slider_recommended')
-        @include('themes::themeophimtv.inc.tabhome')
-        @foreach ($data as $item)
-            @include('themes::themeophimtv.inc.sections_movies')
-        @endforeach
+    <div class="container px-2 mx-auto" id="content">
+        <div class="container mx-auto mt-2 py-2 w-full">
+            @include('themes::themeophimtv.inc.description_home')
+            @foreach ($data as $item)
+                @include('themes::themeophimtv.inc.sections_movies')
+            @endforeach
+        </div>
     </div>
 @endsection
