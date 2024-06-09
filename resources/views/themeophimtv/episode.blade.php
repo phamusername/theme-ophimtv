@@ -77,7 +77,7 @@
                             <div
                                 class="absolute bottom-0 space-x-2 text-center w-full bg-white dark:bg-black bg-opacity-40 dark:bg-opacity-80 py-2 m-0 rounded-t-none rounded-lg">
                                 <div data-scroll="#list_episode"
-                                    class="scroll cursor-pointer hover:bg-opacity-80 bg-violet-500 text-gray-50 dark:text-gray-50 inline-block px-1 py-1 rounded">
+                                    class="cursor-pointer hover:bg-opacity-80 bg-violet-500 text-gray-50 dark:text-gray-50 inline-block px-1 py-1 rounded">
                                     Xem Phim</div>
                                 <div data-scroll="#data_link"
                                     class="scroll cursor-pointer hover:bg-opacity-80 bg-red-500 text-gray-50 dark:text-gray-50 inline-block px-1 py-1 rounded">
@@ -235,6 +235,19 @@
                                     </article>
                                 </div>
                             </div>
+                            <div class="card-collapse">
+                                <button
+                                    class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75"
+                                    type="button" aria-expanded="true"><span>Player</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="w-5 h-5 text-sky-500">
+                                        <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd">
+                                        </path>
+                                    </svg>
+                                </button>
+                                <div class="card-collapse-content px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200">
+                                    <iframe style="aspect-ratio: 16/9" id="video_player" class="w-full h-64" src="" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            </div>
                             <div class="mt-0 card-collapse" id="list_episode">
                                 <button
                                     class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200"
@@ -257,11 +270,9 @@
                                                     @foreach ($data->sortBy('name', SORT_NATURAL)->groupBy('name') as $name => $item)
                                                         @foreach ($item as $episode)
                                                             @if ($episode->type !== 'm3u8')
-                                                                <a class="text-center overflow-hidden overflow-ellipsis whitespace-nowrap px-5 py-1 rounded shadow-md bg-gray-400 text-gray-50 hover:bg-violet-500 dark:bg-slate-600 dark:hover:bg-violet-600"
-                                                                    title="{{ $name }}" target="_blank"
-                                                                    href="{{ $episode->link }}">
-                                                                    {{ $name }}
-                                                                </a>
+                                                            <a class="episode-link text-center overflow-hidden overflow-ellipsis whitespace-nowrap px-5 py-1 rounded shadow-md bg-gray-400 text-gray-50 hover:bg-violet-500 dark:bg-slate-600 dark:hover:bg-violet-600" title="{{ $name }}" href="{{ $episode->link }}">
+                                                                {{ $name }}
+                                                            </a>
                                                             @endif
                                                         @endforeach
                                                     @endforeach
@@ -274,36 +285,56 @@
                             <!-- Display format radio buttons -->
                             <!-- Display format radio buttons -->
                             <div class="card-collapse">
-                                <button class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75" \="" type="button" aria-expanded="true" aria-controls="headlessui-disclosure-panel-9"><span>Định dạng nguồn</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="transform rotate-180 w-5 h-5 text-sky-500">
-                                        <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd">
+                                <button
+                                    class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75"
+                                    \="" type="button" aria-expanded="true"
+                                    aria-controls="headlessui-disclosure-panel-9"><span>Định dạng nguồn</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                        aria-hidden="true" class="transform rotate-180 w-5 h-5 text-sky-500">
+                                        <path fill-rule="evenodd"
+                                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                            clip-rule="evenodd">
                                         </path>
                                     </svg>
                                 </button>
-                                <div class="card-collapse-content px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200" id="data_link">
-                                                                    <div class="lg:flex gap-x-2 mb-2">
+                                <div class="card-collapse-content px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200"
+                                    id="data_link">
+                                    <div class="lg:flex gap-x-2 mb-2">
                                         <label class="">Định dạng hiển thị: </label>
                                         <div class="form-check form-check-inline">
-                                            <input id="showType1" class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="typeShow" checked="" value="1">
-                                                <label class="form-check-label inline-block text-sky-500" for="showType1">Tập|Link</label>
-                                            </div>
+                                            <input id="showType1"
+                                                class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                                type="radio" name="typeShow" checked="" value="1">
+                                            <label class="form-check-label inline-block text-sky-500"
+                                                for="showType1">Tập|Link</label>
+                                        </div>
                                         <div class="form-check form-check-inline">
-                                            <input id="showType2" class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="typeShow" value="2">
-                                                <label class="form-check-label inline-block text-sky-500" for="showType2">Tập|Slug|Link</label>
-                                            </div>
+                                            <input id="showType2"
+                                                class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                                type="radio" name="typeShow" value="2">
+                                            <label class="form-check-label inline-block text-sky-500"
+                                                for="showType2">Tập|Slug|Link</label>
+                                        </div>
                                         <div class="form-check form-check-inline">
-                                            <input id="showType3" class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="typeShow" value="3">
-                                                <label class="form-check-label inline-block text-sky-500" for="showType3">Link</label>
-                                            </div>
+                                            <input id="showType3"
+                                                class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                                type="radio" name="typeShow" value="3">
+                                            <label class="form-check-label inline-block text-sky-500"
+                                                for="showType3">Link</label>
+                                        </div>
                                     </div>
-                                    
+
                                     <div class="lg:flex gap-x-2 mb-2">
                                         <label class="">Sắp xếp: </label>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" id="sort" class="text-sky-500 hover:text-violet-500 cursor-pointer w-6 h-6 sort_data">
-                                            <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z"></path>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                            aria-hidden="true" id="sort"
+                                            class="text-sky-500 hover:text-violet-500 cursor-pointer w-6 h-6 sort_data">
+                                            <path
+                                                d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z">
+                                            </path>
                                         </svg>
                                     </div>
-                                                                </div>
+                                </div>
                             </div>
 
                             <div class="mt-4 card-collapse">
@@ -383,167 +414,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
-                            <script>
-                                // Pass the episodes data from PHP to JavaScript
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    // Pass the episodes data from PHP to JavaScript
-                                    const episodes = @json($currentMovie->episodes->groupBy('server'));
-
-                                    let serverEmbed = localStorage.getItem('selectedServerEmbed') || document.querySelector('.server')
-                                        .dataset.server;
-                                    let serverM3u8 = localStorage.getItem('selectedServerM3u8') || document.querySelector('.server-m3u8')
-                                        .dataset.server;
-                                    const buttonsEmbed = document.querySelectorAll('.server');
-                                    const buttonsM3u8 = document.querySelectorAll('.server-m3u8');
-                                    const textareaEmbed = document.getElementById('area_embed');
-                                    const textareaM3u8 = document.getElementById('area_m3u8');
-                                    const typeShowInputs = document.querySelectorAll('.type_show');
-                                    let sortOrder = localStorage.getItem('sortOrder') || 'asc';
-
-                                    // Restore selected typeShow
-                                    const savedTypeShow = localStorage.getItem('selectedTypeShow');
-                                    if (savedTypeShow) {
-                                        document.querySelector(`input[name="typeShow"][value="${savedTypeShow}"]`).checked = true;
-                                    }
-
-                                    // Update sort icon based on saved sortOrder
-                                    const sortIconPath = document.getElementById('sortIconPath');
-                                    if (sortIconPath) {
-                                        if (sortOrder === 'desc') {
-                                            sortIconPath.setAttribute('d',
-                                                'M3 17a1 1 0 000-2h11a1 1 0 100 2H3zM3 13a1 1 0 000-2h7a1 1 0 100 2H3zM3 9a1 1 0 100-2h4a1 1 0 100 2H3zM15 12a1 1 0 10-2 0v-5.586l-1.293 1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 001.414 1.414L15 6.414V12z'
-                                                );
-                                        }
-                                    }
-
-                                    function render_data_link(server, type = 'embed') {
-                                        let data = episodes[server];
-                                        let result = '';
-
-                                        // Check if data is defined
-                                        if (!data) {
-                                            console.error(`No data found for server: ${server}`);
-                                            return;
-                                        }
-
-                                        let typeShow = document.querySelector('input[name="typeShow"]:checked').value;
-
-                                        // Ensure the data is sorted
-                                        data = data.sort((a, b) => a.name.localeCompare(b.name, undefined, {
-                                            numeric: true
-                                        }));
-
-                                        if (sortOrder === 'desc') {
-                                            data = [...data].reverse(); // Create a new reversed array
-                                        }
-
-                                        data.forEach(element => {
-                                            if (type === 'embed' && element.type !== 'm3u8') {
-                                                if (typeShow == '1') {
-                                                    result += `${element.name}|${element.link}\n`;
-                                                } else if (typeShow == '2') {
-                                                    result += `${element.name}|${element.slug}|${element.link}\n`;
-                                                } else if (typeShow == '3') {
-                                                    result += `${element.link}\n`;
-                                                }
-                                            } else if (type === 'm3u8' && element.type === 'm3u8') {
-                                                if (typeShow == '1') {
-                                                    result += `${element.name}|${element.link}\n`;
-                                                } else if (typeShow == '2') {
-                                                    result += `${element.name}|${element.slug}|${element.link}\n`;
-                                                } else if (typeShow == '3') {
-                                                    result += `${element.link}\n`;
-                                                }
-                                            }
-                                        });
-
-                                        if (type === 'embed') {
-                                            textareaEmbed.value = result;
-                                        } else {
-                                            textareaM3u8.value = result;
-                                        }
-                                    }
-
-                                    buttonsEmbed.forEach(button => {
-                                        button.addEventListener('click', function() {
-                                            serverEmbed = this.getAttribute('data-server');
-                                            localStorage.setItem('selectedServerEmbed', serverEmbed);
-
-                                            // Remove active class from all buttons
-                                            buttonsEmbed.forEach(btn => {
-                                                btn.classList.remove('bg-white', 'dark:bg-slate-900', 'shadow');
-                                                btn.classList.add('text-blue-700', 'hover:bg-white/[0.12]',
-                                                    'hover:text-white');
-                                            });
-
-                                            // Add active class to the clicked button
-                                            this.classList.add('bg-white', 'dark:bg-slate-900', 'shadow');
-                                            this.classList.remove('text-blue-700', 'hover:bg-white/[0.12]',
-                                                'hover:text-white');
-
-                                            // Update the textarea content
-                                            render_data_link(serverEmbed, 'embed');
-                                        });
-                                    });
-
-                                    buttonsM3u8.forEach(button => {
-                                        button.addEventListener('click', function() {
-                                            serverM3u8 = this.getAttribute('data-server');
-                                            localStorage.setItem('selectedServerM3u8', serverM3u8);
-
-                                            // Remove active class from all buttons
-                                            buttonsM3u8.forEach(btn => {
-                                                btn.classList.remove('bg-white', 'dark:bg-slate-900', 'shadow');
-                                                btn.classList.add('text-blue-700', 'hover:bg-white/[0.12]',
-                                                    'hover:text-white');
-                                            });
-
-                                            // Add active class to the clicked button
-                                            this.classList.add('bg-white', 'dark:bg-slate-900', 'shadow');
-                                            this.classList.remove('text-blue-700', 'hover:bg-white/[0.12]',
-                                                'hover:text-white');
-
-                                            // Update the textarea content
-                                            render_data_link(serverM3u8, 'm3u8');
-                                        });
-                                    });
-
-                                    typeShowInputs.forEach(input => {
-                                        input.addEventListener('change', function() {
-                                            localStorage.setItem('selectedTypeShow', this.value);
-                                            render_data_link(serverEmbed, 'embed');
-                                            render_data_link(serverM3u8, 'm3u8');
-                                        });
-                                    });
-
-                                    document.getElementById('sort').addEventListener('click', function() {
-                                        sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
-                                        localStorage.setItem('sortOrder', sortOrder);
-
-                                        // Toggle sort icon path
-                                        if (sortOrder === 'asc') {
-                                            sortIconPath.setAttribute('d',
-                                                'M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z'
-                                                );
-                                        } else {
-                                            sortIconPath.setAttribute('d',
-                                                'M3 17a1 1 0 000-2h11a1 1 0 100 2H3zM3 13a1 1 0 000-2h7a1 1 0 100 2H3zM3 9a1 1 0 100-2h4a1 1 0 100 2H3zM15 12a1 1 0 10-2 0v-5.586l-1.293 1.293a1 1 0 00-1.414-1.414l-3-3a1 1 0 001.414 1.414L15 6.414V12z'
-                                                );
-                                        }
-
-                                        render_data_link(serverEmbed, 'embed');
-                                        render_data_link(serverM3u8, 'm3u8');
-                                    });
-
-                                    // Initial render for the selected or first server
-                                    render_data_link(serverEmbed, 'embed');
-                                    render_data_link(serverM3u8, 'm3u8');
-                                });
-                            </script>
-
-
                         </div>
                     </div>
                 </div>
@@ -553,8 +423,209 @@
 @endsection
 
 @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const episodeLinks = document.querySelectorAll('.episode-link');
+            const videoPlayer = document.getElementById('video_player');
+            const playerSection = document.querySelector('.card-collapse-content');
+
+            episodeLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent the default anchor behavior
+                    const videoUrl = this.getAttribute('href');
+                    videoPlayer.setAttribute('src', videoUrl);
+                    showPlayerSection();
+                    scrollToPlayer();
+                });
+            });
+
+            function showPlayerSection() {
+                playerSection.style.display = 'block';
+            }
+
+            function scrollToPlayer() {
+                const playerButton = document.querySelector('.card-collapse > button');
+                window.scrollTo({
+                    top: playerButton.offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    </script>
     <script src="/themes/ophimtv/static/player/skin/juicycodes.js"></script>
-    <link href="/themes/ophimtv/static/player/skin/juicycodes.css" rel="stylesheet" type="text/css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pass the episodes data from PHP to JavaScript
+            const episodes = @json($currentMovie->episodes->groupBy('server'));
+
+            let serverEmbed = localStorage.getItem('selectedServerEmbed') || document.querySelector('.server')
+                .dataset.server;
+            let serverM3u8 = localStorage.getItem('selectedServerM3u8') || document.querySelector('.server-m3u8')
+                .dataset.server;
+            const buttonsEmbed = document.querySelectorAll('.server');
+            const buttonsM3u8 = document.querySelectorAll('.server-m3u8');
+            const textareaEmbed = document.getElementById('area_embed');
+            const textareaM3u8 = document.getElementById('area_m3u8');
+            const typeShowInputs = document.querySelectorAll('.type_show');
+            let sortOrder = localStorage.getItem('sortOrder') || 'asc';
+
+            // Restore selected typeShow
+            const savedTypeShow = localStorage.getItem('selectedTypeShow');
+            if (savedTypeShow) {
+                document.querySelector(`input[name="typeShow"][value="${savedTypeShow}"]`).checked = true;
+            }
+
+            // Update sort icon based on saved sortOrder
+            const sortIconPath = document.getElementById('sortIconPath');
+            if (sortIconPath) {
+                if (sortOrder === 'desc') {
+                    sortIconPath.setAttribute('d',
+                        'M3 17a1 1 0 000-2h11a1 1 0 100 2H3zM3 13a1 1 0 000-2h7a1 1 0 100 2H3zM3 9a1 1 0 100-2h4a1 1 0 100 2H3zM15 12a1 1 0 10-2 0v-5.586l-1.293 1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 001.414 1.414L15 6.414V12z'
+                    );
+                }
+            }
+
+            function render_data_link(server, type = 'embed') {
+                let data = episodes[server];
+                let result = '';
+
+                // Check if data is defined
+                if (!data) {
+                    console.error(`No data found for server: ${server}`);
+                    return;
+                }
+
+                let typeShow = document.querySelector('input[name="typeShow"]:checked').value;
+
+                // Ensure the data is sorted
+                data = data.sort((a, b) => a.name.localeCompare(b.name, undefined, {
+                    numeric: true
+                }));
+
+                if (sortOrder === 'desc') {
+                    data = [...data].reverse(); // Create a new reversed array
+                }
+
+                data.forEach(element => {
+                    if (type === 'embed' && element.type !== 'm3u8') {
+                        if (typeShow == '1') {
+                            result += `${element.name}|${element.link}\n`;
+                        } else if (typeShow == '2') {
+                            result += `${element.name}|${element.slug}|${element.link}\n`;
+                        } else if (typeShow == '3') {
+                            result += `${element.link}\n`;
+                        }
+                    } else if (type === 'm3u8' && element.type === 'm3u8') {
+                        if (typeShow == '1') {
+                            result += `${element.name}|${element.link}\n`;
+                        } else if (typeShow == '2') {
+                            result += `${element.name}|${element.slug}|${element.link}\n`;
+                        } else if (typeShow == '3') {
+                            result += `${element.link}\n`;
+                        }
+                    }
+                });
+
+                if (type === 'embed') {
+                    textareaEmbed.value = result;
+                } else {
+                    textareaM3u8.value = result;
+                }
+            }
+
+            buttonsEmbed.forEach(button => {
+                button.addEventListener('click', function() {
+                    serverEmbed = this.getAttribute('data-server');
+                    localStorage.setItem('selectedServerEmbed', serverEmbed);
+
+                    // Remove active class from all buttons
+                    buttonsEmbed.forEach(btn => {
+                        btn.classList.remove('bg-white', 'dark:bg-slate-900', 'shadow');
+                        btn.classList.add('text-blue-700', 'hover:bg-white/[0.12]',
+                            'hover:text-white');
+                    });
+
+                    // Add active class to the clicked button
+                    this.classList.add('bg-white', 'dark:bg-slate-900', 'shadow');
+                    this.classList.remove('text-blue-700', 'hover:bg-white/[0.12]',
+                        'hover:text-white');
+
+                    // Update the textarea content
+                    render_data_link(serverEmbed, 'embed');
+                });
+            });
+
+            buttonsM3u8.forEach(button => {
+                button.addEventListener('click', function() {
+                    serverM3u8 = this.getAttribute('data-server');
+                    localStorage.setItem('selectedServerM3u8', serverM3u8);
+
+                    // Remove active class from all buttons
+                    buttonsM3u8.forEach(btn => {
+                        btn.classList.remove('bg-white', 'dark:bg-slate-900', 'shadow');
+                        btn.classList.add('text-blue-700', 'hover:bg-white/[0.12]',
+                            'hover:text-white');
+                    });
+
+                    // Add active class to the clicked button
+                    this.classList.add('bg-white', 'dark:bg-slate-900', 'shadow');
+                    this.classList.remove('text-blue-700', 'hover:bg-white/[0.12]',
+                        'hover:text-white');
+
+                    // Update the textarea content
+                    render_data_link(serverM3u8, 'm3u8');
+                });
+            });
+
+            typeShowInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    localStorage.setItem('selectedTypeShow', this.value);
+                    render_data_link(serverEmbed, 'embed');
+                    render_data_link(serverM3u8, 'm3u8');
+                });
+            });
+
+            document.getElementById('sort').addEventListener('click', function() {
+                sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
+                localStorage.setItem('sortOrder', sortOrder);
+
+                // Toggle sort icon path
+                if (sortOrder === 'asc') {
+                    sortIconPath.setAttribute('d',
+                        'M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z'
+                    );
+                } else {
+                    sortIconPath.setAttribute('d',
+                        'M3 17a1 1 0 000-2h11a1 1 0 100 2H3zM3 13a1 1 0 000-2h7a1 1 0 100 2H3zM3 9a1 1 0 100-2h4a1 1 0 100 2H3zM15 12a1 1 0 10-2 0v-5.586l-1.293 1.293a1 1 0 00-1.414-1.414l-3-3a1 1 0 001.414 1.414L15 6.414V12z'
+                    );
+                }
+
+                render_data_link(serverEmbed, 'embed');
+                render_data_link(serverM3u8, 'm3u8');
+            });
+
+            // Initial render for the selected or first server
+            render_data_link(serverEmbed, 'embed');
+            render_data_link(serverM3u8, 'm3u8');
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.scroll').forEach(function(element) {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-scroll');
+                    const targetElement = document.querySelector(targetId);
+
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
 
     {{--    <script src="/themes/ophimtv/static/player/js/p2p-media-loader-core.min.js"></script> --}}
     {{--    <script src="/themes/ophimtv/static/player/js/p2p-media-loader-hlsjs.min.js"></script> --}}

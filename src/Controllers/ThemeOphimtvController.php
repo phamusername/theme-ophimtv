@@ -13,7 +13,7 @@ use Ophim\Core\Models\Movie;
 use Ophim\Core\Models\Region;
 use Ophim\Core\Models\Tag;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class ThemeOphimtvController
@@ -63,10 +63,13 @@ class ThemeOphimtvController
 
         // Get the total count of movies
         $count_movies = DB::table('movies')->count();
+        $today = Carbon::today();
+        $updatedTodayCount = Movie::whereDate('updated_at', $today)->count();
 
         return view('themes::themeophimtv.index', [
             'title' => Setting::get('site_homepage_title'),
-            'count_movies' => $count_movies
+            'count_movies' => $count_movies,
+            'updatedTodayCount' => $updatedTodayCount
         ]);
     }
 

@@ -49,8 +49,8 @@
                                                 <div>
                                                     <button
                                                         class="has_sub_menu inline-flex justify-center w-full text-sm font-medium rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-                                                        type="button" aria-haspopup="true"
-                                                        aria-expanded="true">{{ $item['name'] }}
+                                                        type="button" aria-haspopup="true" aria-expanded="false">
+                                                        {{ $item['name'] }}
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                                                             fill="currentColor" aria-hidden="true"
                                                             class="w-5 h-5 ml-2 -mr-1 text-violet-400 hover:text-violet-800">
@@ -60,9 +60,9 @@
                                                             </path>
                                                         </svg>
                                                     </button>
-                                                    <div class="sub_menu_mobile origin-top-right mt-2 bg-white dark:bg-slate-800 divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                                    <div class="sub-menu absolute right-0 w-[450px] mt-8 origin-top-right bg-white dark:bg-slate-800 divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                                                         role="menu" tabindex="0">
-                                                        <div class="px-1 py-1 flex flex-wrap" role="none">
+                                                        <div class="px-1 py-1 grid grid-flow-rows grid-cols-3 justify-items-center" role="none">
                                                             @foreach ($item['children'] as $children)
                                                                 <button
                                                                     class="hover:bg-violet-500 hover:text-white text-gray-900 dark:text-white group flex rounded-md text-sm"
@@ -73,6 +73,7 @@
                                                             @endforeach
                                                         </div>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         </span>
@@ -166,3 +167,20 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const menuButton = document.getElementById('menuButton');
+        const subMenu = document.getElementById('subMenu');
+
+        menuButton.addEventListener('click', function () {
+            subMenu.classList.toggle('active');
+        });
+
+        // Optional: Close the menu when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!menuButton.contains(event.target) && !subMenu.contains(event.target)) {
+                subMenu.classList.remove('active');
+            }
+        });
+    });
+</script>

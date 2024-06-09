@@ -17,6 +17,7 @@
                                 clip-rule="evenodd">
                             </path>
                         </svg>
+                        {{ $updatedTodayCount }}
                     </div>
                     <h2 class="text-sm text-gray-800 dark:text-gray-400 text-center">Phim cập nhật
                         hôm

@@ -9,20 +9,15 @@
     <ul class="list-decimal bg-white dark:bg-slate-800">
         @foreach ($menu as $item)
             @if (count($item['children']))
-                <li>
+                <li class="border-b border-slate-200 dark:border-slate-800">
                     <span class="hover:text-sky-500 dark:hover:text-sky-400">
                         <div class="relative inline-block text-left">
                             <div>
                                 <button
-                                    class="has_sub_menu inline-flex justify-center w-full text-sm font-medium rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+                                    class="has_sub_menu_mobile inline-flex w-full text-lg font-medium rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
                                     type="button" aria-haspopup="true" aria-expanded="true">{{ $item['name'] }}
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                        aria-hidden="true"
-                                        class="w-5 h-5 ml-2 -mr-1 text-violet-400 hover:text-violet-800">
-                                        <path fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                            clip-rule="evenodd">
-                                        </path>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="w-5 mt-1 h-5 ml-2 -mr-1 text-violet-400 hover:text-violet-800">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                     </svg>
                                 </button>
                                 <div class="sub_menu_mobile origin-top-right mt-2 bg-white dark:bg-slate-800 divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
@@ -43,8 +38,8 @@
                     </span>
                 </li>
             @else
-                <li>
-                    <a class="hover:text-sky-500 dark:hover:text-sky-400 ajax-load"
+                <li class="border-b border-slate-200 dark:border-slate-800">
+                    <a class="hover:text-sky-500 dark:hover:text-sky-400 text-lg ajax-load menu_item"
                         href="{{ $item['link'] }}">{{ $item['name'] }}</a>
                 </li>
             @endif

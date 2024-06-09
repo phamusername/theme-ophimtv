@@ -1026,7 +1026,7 @@ select {
 }
 .bg-violet-500 {
     --tw-bg-opacity: 1;
-    background-color: rgb(50 205 50 / var(--tw-bg-opacity));
+    background-color: rgb(139 92 246/var(--tw-bg-opacity));
 }
 .bg-red-500 {
     --tw-bg-opacity: 1;
