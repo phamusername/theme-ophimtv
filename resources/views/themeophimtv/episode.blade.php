@@ -271,57 +271,41 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Display format radio buttons -->
+                            <!-- Display format radio buttons -->
                             <div class="card-collapse">
-                                <button
-                                    class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75"
-                                    \ type="button" aria-expanded="true"
-                                    aria-controls="headlessui-disclosure-panel-9"><span>Định dạng nguồn</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                        aria-hidden="true" class="transform rotate-180 w-5 h-5 text-sky-500">
-                                        <path fill-rule="evenodd"
-                                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-                                            clip-rule="evenodd">
+                                <button class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75" \="" type="button" aria-expanded="true" aria-controls="headlessui-disclosure-panel-9"><span>Định dạng nguồn</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="transform rotate-180 w-5 h-5 text-sky-500">
+                                        <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd">
                                         </path>
                                     </svg>
                                 </button>
-                                <div class="card-collapse-content px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200"
-                                    id="data_link">
-                                    <div class="lg:flex gap-x-2 mb-2">
-                                        <label class>Định dạng hiển thị: </label>
+                                <div class="card-collapse-content px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200" id="data_link">
+                                                                    <div class="lg:flex gap-x-2 mb-2">
+                                        <label class="">Định dạng hiển thị: </label>
                                         <div class="form-check form-check-inline">
-                                            <input id="showType1"
-                                                class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                                type="radio" name="typeShow" checked value="1">
-                                            <label class="form-check-label inline-block text-sky-500"
-                                                for="showType1">Tập|Link</label>
-                                        </div>
+                                            <input id="showType1" class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="typeShow" checked="" value="1">
+                                                <label class="form-check-label inline-block text-sky-500" for="showType1">Tập|Link</label>
+                                            </div>
                                         <div class="form-check form-check-inline">
-                                            <input id="showType2"
-                                                class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                                type="radio" name="typeShow" value="2">
-                                            <label class="form-check-label inline-block text-sky-500"
-                                                for="showType2">Tập|Slug|Link</label>
-                                        </div>
+                                            <input id="showType2" class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="typeShow" value="2">
+                                                <label class="form-check-label inline-block text-sky-500" for="showType2">Tập|Slug|Link</label>
+                                            </div>
                                         <div class="form-check form-check-inline">
-                                            <input id="showType3"
-                                                class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                                type="radio" name="typeShow" value="3">
-                                            <label class="form-check-label inline-block text-sky-500"
-                                                for="showType3">Link</label>
-                                        </div>
+                                            <input id="showType3" class="type_show form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="typeShow" value="3">
+                                                <label class="form-check-label inline-block text-sky-500" for="showType3">Link</label>
+                                            </div>
                                     </div>
+                                    
                                     <div class="lg:flex gap-x-2 mb-2">
-                                        <label class>Sắp xếp: </label>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                            aria-hidden="true" id="sort"
-                                            class="text-sky-500 hover:text-violet-500 cursor-pointer w-6 h-6 sort_data">
-                                            <path id="sortIconPath"
-                                                d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z">
-                                            </path>
+                                        <label class="">Sắp xếp: </label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" id="sort" class="text-sky-500 hover:text-violet-500 cursor-pointer w-6 h-6 sort_data">
+                                            <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z"></path>
                                         </svg>
                                     </div>
-                                </div>
+                                                                </div>
                             </div>
+
                             <div class="mt-4 card-collapse">
                                 <button
                                     class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200 focus:outline-none focus-visible:ring focus-visible:ring-sky-500 focus-visible:ring-opacity-75"
@@ -339,7 +323,7 @@
                                     <div class="w-full max-w-3xl px-2 sm:px-0">
                                         <div class="flex p-1 space-x-1 bg-blue-900/20 rounded-xl" role="tablist"
                                             aria-orientation="horizontal">
-                                            @foreach ($currentMovie->episodes->sortBy([['server', 'desc']])->groupBy('server') as $server => $data)
+                                            @foreach ($currentMovie->episodes->sortBy([['name', 'asc']])->groupBy('server') as $server => $data)
                                                 <button
                                                     class="{{ $loop->index == 0 ? 'server p-2 text-sm leading-5 font-medium dark:text-blue-500 rounded-lg bg-white dark:bg-slate-900 shadow' : 'server p-2 text-sm leading-5 font-medium dark:text-blue-500 rounded-lg text-blue-700 hover:bg-white/[0.12] hover:text-white' }}"
                                                     data-server="{{ $server }}" data-type="embed" role="tab"
@@ -378,7 +362,7 @@
                                     <div class="w-full max-w-3xl px-2 sm:px-0">
                                         <div class="flex p-1 space-x-1 bg-blue-900/20 rounded-xl" role="tablist"
                                             aria-orientation="horizontal">
-                                            @foreach ($currentMovie->episodes->sortBy([['server', 'desc']])->groupBy('server') as $server => $data)
+                                            @foreach ($currentMovie->episodes->sortBy([['name', 'asc']])->groupBy('server') as $server => $data)
                                                 <button
                                                     class="{{ $loop->index == 0 ? 'server-m3u8 p-2 text-sm leading-5 font-medium dark:text-blue-500 rounded-lg bg-white dark:bg-slate-900 shadow' : 'server-m3u8 p-2 text-sm leading-5 font-medium dark:text-blue-500 rounded-lg text-blue-700 hover:bg-white/[0.12] hover:text-white' }}"
                                                     data-server="{{ $server }}" data-type="m3u8" role="tab"
@@ -400,13 +384,17 @@
                                 </div>
                             </div>
 
+
                             <script>
                                 // Pass the episodes data from PHP to JavaScript
-                                const episodes = @json($currentMovie->episodes->groupBy('server'));
-
                                 document.addEventListener('DOMContentLoaded', function() {
-                                    let serverEmbed = localStorage.getItem('selectedServerEmbed') || $('.server').first().data('server');
-                                    let serverM3u8 = localStorage.getItem('selectedServerM3u8') || $('.server-m3u8').first().data('server');
+                                    // Pass the episodes data from PHP to JavaScript
+                                    const episodes = @json($currentMovie->episodes->groupBy('server'));
+
+                                    let serverEmbed = localStorage.getItem('selectedServerEmbed') || document.querySelector('.server')
+                                        .dataset.server;
+                                    let serverM3u8 = localStorage.getItem('selectedServerM3u8') || document.querySelector('.server-m3u8')
+                                        .dataset.server;
                                     const buttonsEmbed = document.querySelectorAll('.server');
                                     const buttonsM3u8 = document.querySelectorAll('.server-m3u8');
                                     const textareaEmbed = document.getElementById('area_embed');
@@ -425,7 +413,7 @@
                                     if (sortIconPath) {
                                         if (sortOrder === 'desc') {
                                             sortIconPath.setAttribute('d',
-                                                'M3 17a1 1 0 000-2h11a1 1 0 100 2H3zM3 13a1 1 0 000-2h7a1 1 0 100 2H3zM3 9a1 1 0 100-2h4a1 1 0 100 2H3zM15 12a1 1 0 10-2 0v-5.586l-1.293 1.293a1 1 0 00-1.414-1.414l3-3a1 1 0 001.414 0l3 3a1 1 0 00-1.414 1.414L15 6.414V12z'
+                                                'M3 17a1 1 0 000-2h11a1 1 0 100 2H3zM3 13a1 1 0 000-2h7a1 1 0 100 2H3zM3 9a1 1 0 100-2h4a1 1 0 100 2H3zM15 12a1 1 0 10-2 0v-5.586l-1.293 1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 001.414 1.414L15 6.414V12z'
                                                 );
                                         }
                                     }
@@ -433,7 +421,19 @@
                                     function render_data_link(server, type = 'embed') {
                                         let data = episodes[server];
                                         let result = '';
+
+                                        // Check if data is defined
+                                        if (!data) {
+                                            console.error(`No data found for server: ${server}`);
+                                            return;
+                                        }
+
                                         let typeShow = document.querySelector('input[name="typeShow"]:checked').value;
+
+                                        // Ensure the data is sorted
+                                        data = data.sort((a, b) => a.name.localeCompare(b.name, undefined, {
+                                            numeric: true
+                                        }));
 
                                         if (sortOrder === 'desc') {
                                             data = [...data].reverse(); // Create a new reversed array
@@ -529,7 +529,7 @@
                                                 );
                                         } else {
                                             sortIconPath.setAttribute('d',
-                                                'M3 17a1 1 0 000-2h11a1 1 0 100 2H3zM3 13a1 1 0 000-2h7a1 1 0 100 2H3zM3 9a1 1 0 100-2h4a1 1 0 100 2H3zM15 12a1 1 0 10-2 0v-5.586l-1.293 1.293a1 1 0 00-1.414-1.414l3-3a1 1 0 001.414 0l3 3a1 1 0 00-1.414 1.414L15 6.414V12z'
+                                                'M3 17a1 1 0 000-2h11a1 1 0 100 2H3zM3 13a1 1 0 000-2h7a1 1 0 100 2H3zM3 9a1 1 0 100-2h4a1 1 0 100 2H3zM15 12a1 1 0 10-2 0v-5.586l-1.293 1.293a1 1 0 00-1.414-1.414l-3-3a1 1 0 001.414 1.414L15 6.414V12z'
                                                 );
                                         }
 
@@ -542,6 +542,7 @@
                                     render_data_link(serverM3u8, 'm3u8');
                                 });
                             </script>
+
 
                         </div>
                     </div>
