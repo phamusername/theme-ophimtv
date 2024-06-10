@@ -20,63 +20,78 @@ class ThemeOphimtvController
 {
 
     public function index(Request $request)
-    {
-        if ($request['search'] || $request['filter']) {
-            $data = Movie::when(!empty($request['filter']['category']), function ($movie) {
-                $movie->whereHas('categories', function ($categories) {
-                    $categories->where('id', request('filter')['category']);
-                });
-            })->when(!empty($request['filter']['region']), function ($movie) {
-                $movie->whereHas('regions', function ($regions) {
-                    $regions->where('id', request('filter')['region']);
-                });
-            })->when(!empty($request['filter']['year']), function ($movie) {
-                $movie->where('publish_year', request('filter')['year']);
-            })->when(!empty($request['filter']['type']), function ($movie) {
-                $movie->where('type', request('filter')['type']);
-            })->when(!empty($request['search']), function ($query) {
-                $query->where(function ($query) {
-                    $query->where('name', 'like', '%' . request('search') . '%')
-                        ->orWhere('origin_name', 'like', '%' . request('search')  . '%');
-                })->orderBy('name', 'desc');
-            })->when(!empty($request['filter']['sort']), function ($movie) {
-                if (request('filter')['sort'] == 'create') {
-                    return $movie->orderBy('created_at', 'desc');
-                }
-                if (request('filter')['sort'] == 'update') {
-                    return $movie->orderBy('updated_at', 'desc');
-                }
-                if (request('filter')['sort'] == 'year') {
-                    return $movie->orderBy('publish_year', 'desc');
-                }
-                if (request('filter')['sort'] == 'view') {
-                    return $movie->orderBy('view_total', 'desc');
-                }
-            })->paginate();
+{
+    if ($request['search'] || $request['filter']) {
+        $data = Movie::when(!empty($request['filter']['category']), function ($movie) use ($request) {
+            $movie->whereHas('categories', function ($categories) use ($request) {
+                $categories->where('id', $request['filter']['category']);
+            });
+        })->when(!empty($request['filter']['region']), function ($movie) use ($request) {
+            $movie->whereHas('regions', function ($regions) use ($request) {
+                $regions->where('id', $request['filter']['region']);
+            });
+        })->when(!empty($request['filter']['year']), function ($movie) use ($request) {
+            $movie->where('publish_year', $request['filter']['year']);
+        })->when(!empty($request['filter']['type']), function ($movie) use ($request) {
+            $movie->where('type', $request['filter']['type']);
+        })->when(!empty($request['search']), function ($query) use ($request) {
+            $query->where(function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request['search'] . '%')
+                    ->orWhere('origin_name', 'like', '%' . $request['search'] . '%')
+                    ->orWhere('publish_year', 'like', '%' . $request['search'] . '%');
 
-            return view('themes::themeophimtv.catalog', [
-                'data' => $data,
-                'search' => $request['search'],
-                'section_name' => "Tìm kiếm phim: $request->search"
-            ]);
-        }
+                // Check if the search term contains 'phim bộ' and filter type=series
+                if (stripos($request['search'], 'phim bộ') !== false || stripos($request['search'], 'phim bo') !== false) {
+                    $query->orWhere('type', 'series');
+                }
 
-        // Get the total count of movies
-        $count_movies = DB::table('movies')->count();
-        $today = Carbon::today();
-        $updatedTodayCount = Movie::whereDate('updated_at', $today)->count();
+                if (stripos($request['search'], 'phim lẻ') !== false || stripos($request['search'], 'phim le') !== false) {
+                    $query->orWhere('type', 'single');
+                }
+            })->orderBy('name', 'desc');
+        })->when(!empty($request['filter']['sort']), function ($movie) use ($request) {
+            if ($request['filter']['sort'] == 'create') {
+                return $movie->orderBy('created_at', 'desc');
+            }
+            if ($request['filter']['sort'] == 'update') {
+                return $movie->orderBy('updated_at', 'desc');
+            }
+            if ($request['filter']['sort'] == 'year') {
+                return $movie->orderBy('publish_year', 'desc');
+            }
+            if ($request['filter']['sort'] == 'view') {
+                return $movie->orderBy('view_total', 'desc');
+            }
+        })->paginate();
 
-        return view('themes::themeophimtv.index', [
-            'title' => Setting::get('site_homepage_title'),
-            'count_movies' => $count_movies,
-            'updatedTodayCount' => $updatedTodayCount
+        // Log the data for debugging
+        \Log::info($data);
+
+        return view('themes::themeophimtv.catalog', [
+            'data' => $data,
+            'search' => $request['search'],
+            'section_name' => "Tìm kiếm phim: $request->search"
         ]);
     }
+
+    // Get the total count of movies
+    $count_movies = DB::table('movies')->count();
+    $today = Carbon::today();
+    $updatedTodayCount = Movie::whereDate('updated_at', $today)->count();
+
+    return view('themes::themeophimtv.index', [
+        'title' => Setting::get('site_homepage_title'),
+        'count_movies' => $count_movies,
+        'updatedTodayCount' => $updatedTodayCount
+    ]);
+}
+
 
     public function search(Request $request, string $search)
     {
         $data = Movie::where('name', 'like', '%' . $search . '%')
-            ->orWhere('origin_name', 'like', '%' . $search  . '%')
+            ->orWhere('origin_name', 'like', '%' . $search . '%')
+            ->orWhere('publish_year', 'like', '%' . $search . '%')
             ->orderBy('name', 'desc')
             ->take(10)
             ->get();
@@ -89,11 +104,12 @@ class ThemeOphimtvController
         return response()->json(['data' => $data]);
     }
 
+
     public function getMovieOverview(Request $request)
     {
         /** @var Movie */
         $movie = Movie::fromCache()->find($request->movie ?: $request->id);
-        if(count($movie->episodes)) {
+        if (count($movie->episodes)) {
             $episode = $movie->episodes
                 ->sortBy([['server', 'asc']])
                 ->groupBy('server')
@@ -101,9 +117,11 @@ class ThemeOphimtvController
                 ->sortByDesc('name', SORT_NATURAL)
                 ->groupBy('name')
                 ->first();
-        } else $episode = null;
+        } else
+            $episode = null;
 
-        if (is_null($movie)) abort(404);
+        if (is_null($movie))
+            abort(404);
 
         $movie->generateSeoTags();
 
@@ -114,7 +132,7 @@ class ThemeOphimtvController
 
         $movie_related_cache_key = 'movie_related:' . $movie->id;
         $movie_related = Cache::get($movie_related_cache_key);
-        if(is_null($movie_related)) {
+        if (is_null($movie_related)) {
             $movie_related = $movie->categories[0]->movies()->inRandomOrder()->limit(get_theme_option('movie_related_limit', 10))->get();
             Cache::put($movie_related_cache_key, $movie_related, setting('site_cache_ttl', 5 * 60));
         }
@@ -131,7 +149,8 @@ class ThemeOphimtvController
     {
         $movie = Movie::fromCache()->find($request->movie ?: $request->movie_id)->load('episodes');
 
-        if (is_null($movie)) abort(404);
+        if (is_null($movie))
+            abort(404);
 
         /** @var Episode */
         $episode_id = $request->id;
@@ -139,7 +158,8 @@ class ThemeOphimtvController
             return $collection->where('id', $episode_id);
         })->firstWhere('slug', $request->episode);
 
-        if (is_null($episode)) abort(404);
+        if (is_null($episode))
+            abort(404);
 
         $episode->generateSeoTags();
 
@@ -150,7 +170,7 @@ class ThemeOphimtvController
 
         $movie_related_cache_key = 'movie_related:' . $movie->id;
         $movie_related = Cache::get($movie_related_cache_key);
-        if(is_null($movie_related)) {
+        if (is_null($movie_related)) {
             $movie_related = $movie->categories[0]->movies()->inRandomOrder()->limit(get_theme_option('movie_related_limit', 10))->get();
             Cache::put($movie_related_cache_key, $movie_related, setting('site_cache_ttl', 5 * 60));
         }
@@ -168,7 +188,8 @@ class ThemeOphimtvController
         /** @var Category */
         $category = Category::fromCache()->find($request->category ?: $request->id);
 
-        if (is_null($category)) abort(404);
+        if (is_null($category))
+            abort(404);
 
         $category->generateSeoTags();
 
@@ -190,7 +211,8 @@ class ThemeOphimtvController
         /** @var Region */
         $region = Region::fromCache()->find($request->region ?: $request->id);
 
-        if (is_null($region)) abort(404);
+        if (is_null($region))
+            abort(404);
 
         $region->generateSeoTags();
 
@@ -209,7 +231,8 @@ class ThemeOphimtvController
         /** @var Actor */
         $actor = Actor::fromCache()->find($request->actor ?: $request->id);
 
-        if (is_null($actor)) abort(404);
+        if (is_null($actor))
+            abort(404);
 
         $actor->generateSeoTags();
 
@@ -228,7 +251,8 @@ class ThemeOphimtvController
         /** @var Director */
         $director = Director::fromCache()->find($request->director ?: $request->id);
 
-        if (is_null($director)) abort(404);
+        if (is_null($director))
+            abort(404);
 
         $director->generateSeoTags();
 
@@ -247,7 +271,8 @@ class ThemeOphimtvController
         /** @var Tag */
         $tag = Tag::fromCache()->find($request->tag ?: $request->id);
 
-        if (is_null($tag)) abort(404);
+        if (is_null($tag))
+            abort(404);
 
         $tag->generateSeoTags();
 
@@ -265,13 +290,14 @@ class ThemeOphimtvController
         /** @var Catalog */
         $catalog = Catalog::fromCache()->find($request->type ?: $request->id);
 
-        if (is_null($catalog)) abort(404);
+        if (is_null($catalog))
+            abort(404);
 
         $catalog->generateSeoTags();
 
         $cache_key = 'catalog:' . $catalog->id . ':page:' . ($request['page'] ?: 1);
         $movies = Cache::get($cache_key);
-        if(is_null($movies)) {
+        if (is_null($movies)) {
             $value = explode('|', trim($catalog->value));
             [$relation_config, $field, $val, $sortKey, $alg] = array_merge($value, ['', 'is_copyright', 0, 'created_at', 'desc']);
             $relation_config = explode(',', $relation_config);
@@ -285,11 +311,12 @@ class ThemeOphimtvController
                 })->when(!$relation_table, function ($query) use ($field, $val) {
                     $query->where(array_combine(explode(",", $field), explode(",", $val)));
                 })
-                ->orderBy($sortKey, $alg)
-                ->paginate($catalog->paginate);
+                    ->orderBy($sortKey, $alg)
+                    ->paginate($catalog->paginate);
 
                 Cache::put($cache_key, $movies, setting('site_cache_ttl', 5 * 60));
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         return view('themes::themeophimtv.catalog', [
@@ -320,13 +347,14 @@ class ThemeOphimtvController
         $movie = Movie::fromCache()->find($movie);
 
         $movie->refresh()->increment('rating_count', 1, [
-            'rating_star' => $movie->rating_star +  ((int) request('rating') - $movie->rating_star) / ($movie->rating_count + 1)
+            'rating_star' => $movie->rating_star + ((int) request('rating') - $movie->rating_star) / ($movie->rating_count + 1)
         ]);
 
         return response()->json(['status' => true, 'rating_star' => number_format($movie->rating_star, 1), 'rating_count' => $movie->rating_count]);
     }
 
-    public function document(){
+    public function document()
+    {
         return view("themes::themeophimtv.pages.document");
     }
 }
