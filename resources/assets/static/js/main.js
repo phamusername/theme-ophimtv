@@ -131,3 +131,6 @@ $(document).on('click', '.card-collapse .toggle-content', function(){
     $(this).find('svg').toggleClass('transform rotate-180');
     $(this).next('.card-collapse-content').slideToggle(300);
 })
+$(document).on('click', '.card-collapse .toggle-content', function(){
+    $(this).next('.card-collapse-content-player').slideToggle(300);
+})

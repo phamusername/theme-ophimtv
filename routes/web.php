@@ -58,4 +58,5 @@ Route::group([
         ->where(['movie' => '.+', 'id' => '[0-9]+'])
         ->name('movies.show');
     Route::get('/search/{search}', [ThemeOphimtvController::class, 'search'])->name('search');
+    Route::get('/api-document', [ThemeOphimtvController::class, 'document'])->name('document');
 });

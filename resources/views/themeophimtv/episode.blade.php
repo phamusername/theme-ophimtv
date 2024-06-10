@@ -244,7 +244,7 @@
                                         </path>
                                     </svg>
                                 </button>
-                                <div class="card-collapse-content px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200">
+                                <div class="card-collapse-content-player px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200 hidden">
                                     <iframe style="aspect-ratio: 16/9" id="video_player" class="w-full h-64" src="" frameborder="0" allowfullscreen></iframe>
                                 </div>
                             </div>
@@ -427,7 +427,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const episodeLinks = document.querySelectorAll('.episode-link');
             const videoPlayer = document.getElementById('video_player');
-            const playerSection = document.querySelector('.card-collapse-content');
+            const playerSection = document.querySelector('.card-collapse-content-player');
 
             episodeLinks.forEach(link => {
                 link.addEventListener('click', function(event) {

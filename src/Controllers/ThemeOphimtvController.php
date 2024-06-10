@@ -325,4 +325,8 @@ class ThemeOphimtvController
 
         return response()->json(['status' => true, 'rating_star' => number_format($movie->rating_star, 1), 'rating_count' => $movie->rating_count]);
     }
+
+    public function document(){
+        return view("themes::themeophimtv.pages.document");
+    }
 }
