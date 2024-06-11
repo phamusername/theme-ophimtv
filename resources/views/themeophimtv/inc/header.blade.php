@@ -24,7 +24,7 @@
                 </div>
                 <div class="relative pointer-events-auto">
                     <div class="relative hidden xl:block">
-                        <form class="group relative" id="search" name="search" method="get" action="/">
+                        <form class="group relative w-[300px]" id="search" name="search" method="get" action="/">
                             <svg width="20" height="20" fill="currentColor"
                                 class="absolute left-3 top-1/2 -mt-2.5 text-slate-400 pointer-events-none group-focus-within:text-blue-500"
                                 aria-hidden="true">
@@ -36,7 +36,7 @@
                                 class="focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 dark:text-slate-100 placeholder-slate-400 rounded-full py-2 pl-10 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm dark:bg-slate-800 dark:highlight-white/5 dark:hover:bg-slate-700"
                                 aria-label="Tìm kiếm phim" placeholder="Tìm kiếm phim...">
                         </form>
-                        <div style="display: none;" class="search-suggest w-full text-center p-2 bg-zinc-800 absolute"></div>
+                        <div style="display: none;" class="search-suggest w-full mt-2 rounded-md text-center p-2 bg-white absolute"></div>
                     </div>
                 </div>
                 <div class="relative flex ml-auto">
@@ -152,7 +152,7 @@
                                 class="focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 dark:text-slate-100 placeholder-slate-400 py-2 pl-10 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm dark:bg-slate-800 dark:highlight-white/5 dark:hover:bg-slate-700"
                                 aria-label="Tìm kiếm phim" placeholder="Tìm kiếm phim..." />
                         </form>
-                        <div style="display: none;" class="search-suggest w-full text-center p-2 bg-zinc-800 absolute"></div>
+                        <div style="display: none;" class="search-suggest w-full mt-2 rounded-md text-center p-2 bg-white absolute"></div>
                     </div>
                 </div>
                 <div class="ml-2 -my-1 xl:hidden">

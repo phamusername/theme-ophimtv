@@ -108,9 +108,9 @@
                     results +=
                         '<div class="pt-2"><a href="' +
                         element["url"] +
-                        '" class="hover:bg-zinc-700 border-b border-zinc-700 grid items-center grid-cols-12 mb-2 gapx-3""><div class="col-span-3 m-1"><img class="h-16 w-16 object-cover" src="' +
+                        '" class="hover:bg-zinc-700 border-zinc-700 grid items-center grid-cols-12 mb-2 gapx-3""><div class="col-span-3 m-1"><img class="h-16 w-16 object-cover" src="' +
                         element["thumb_url"] +
-                        '"></div><div class="col-span-9 m-1"><span class="block font-medium text-gray-200 text-sm">' +
+                        '"></div><div class="col-span-9 m-1"><span class="block font-medium text-black text-sm">' +
                         element["name"] +
                         '</span><span class="block episode-font text-sm text-zinc-400">' +
                         element["episode_current"] +

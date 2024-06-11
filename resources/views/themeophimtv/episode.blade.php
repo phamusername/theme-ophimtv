@@ -76,7 +76,7 @@
                                     style="background-size:cover;background-image:url(&quot;data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=&quot;);background-position:0% 0%"></span>
                             <div
                                 class="absolute bottom-0 space-x-2 text-center w-full bg-white dark:bg-black bg-opacity-40 dark:bg-opacity-80 py-2 m-0 rounded-t-none rounded-lg">
-                                <div data-scroll="#list_episode"
+                                <div id="scroll_button" data-scroll="#list_episode"
                                     class="cursor-pointer hover:bg-opacity-80 bg-violet-500 text-gray-50 dark:text-gray-50 inline-block px-1 py-1 rounded">
                                     Xem Phim</div>
                                 <div data-scroll="#data_link"
@@ -622,6 +622,13 @@
                         });
                     }
                 });
+            });
+        });
+    </script>
+    <script>
+        document.getElementById('scroll_button').addEventListener('click', function() {
+            document.querySelector(this.getAttribute('data-scroll')).scrollIntoView({
+                behavior: 'smooth'
             });
         });
     </script>

@@ -72,10 +72,6 @@ class ThemeOphimtvServiceProvider extends ServiceProvider
                         'hint' => 'display_label|relation|find_by_field|value|limit|show_more_url',
                         'value' => <<<EOT
                         Phim mới cập nhật||is_copyright|0|12|/danh-sach/phim-moi
-                        Phim chiếu rạp mới||is_shown_in_theater|1|12|/danh-sach/phim-chieu-rap
-                        Phim bộ mới||type|series|12|/danh-sach/phim-bo
-                        Phim lẻ mới||type|single|12|/danh-sach/phim-le
-                        Phim hoạt hình|categories|slug|hoat-hinh|12|/the-loai/hoat-hinh
                         EOT,
                         'attributes' => [
                             'rows' => 5
