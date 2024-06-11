@@ -78,7 +78,54 @@
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://phim.nguonc.com/public/js/plugins/cute-alert/cute-alert.js" defer></script>
     <script src="/themes/ophimtv/static/js/main.js?ver=1.0.0" referrerpolicy="origin"></script>
     {!! setting('site_scripts_google_analytics') !!}
+    <script>
+        jQuery(document).ready(function () {
+    let timeoutID = null;
+    $("input[name=search]").keyup(function (e) {
+        clearTimeout(timeoutID);
+        var search = e.target.value;
+        if (search.length <= 1) {
+            $(".search-suggest").hide();
+            return false;
+        }
+        timeoutID = setTimeout(() => searching(search), 0);
+    });
+
+    function searching(search) {
+        $.ajax({
+            type: "get",
+            url: "/search/" + search,
+            dataType: "json",
+            success: function (response) {
+                let results = "";
+                $(".search-suggest").show();
+                for (let i = 0; i < response.data.length; i++) {
+                    const element = response.data[i];
+                    let img = `<img src="${element["thumb_url"]}" alt="${element["name"]}">`;
+                    let name = `<p>${element["name"]}</p>`;
+                    results +=
+                        '<div class="pt-2"><a href="' +
+                        element["url"] +
+                        '" class="hover:bg-zinc-700 border-b border-zinc-700 grid items-center grid-cols-12 mb-2 gapx-3""><div class="col-span-3 m-1"><img class="h-16 w-16 object-cover" src="' +
+                        element["thumb_url"] +
+                        '"></div><div class="col-span-9 m-1"><span class="block font-medium text-gray-200 text-sm">' +
+                        element["name"] +
+                        '</span><span class="block episode-font text-sm text-zinc-400">' +
+                        element["episode_current"] +
+                        "</span></div></a></div>";
+                }
+                results +=
+                    '<a class="py-1 text-sm text-[#d98a5e] text-center w-full block hover:bg-zinc-700" href="/?search=' +
+                    search +
+                    '">Xem tất cả kết quả "' +
+                    search +
+                    '" </a>';
+                $(".search-suggest").html(results);
+            },
+        });
+    }
+});
+    </script>
 @endsection

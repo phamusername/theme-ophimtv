@@ -38,6 +38,23 @@
         @endif
     </td>
     <td class="px-3 py-4 whitespace-nowrap">
+        @if($movie->content_nguonc)
+            <div class="text-sm text-violet-500 dark:text-slate-100 leading-5 rounded-full mb-2 px-2 text-center">
+                NC
+            </div>
+        @endif
+        @if($movie->content_ophim)
+            <div class="text-sm text-violet-500 dark:text-slate-100 leading-5 rounded-full mb-2 px-2 text-center">
+                OP
+            </div>
+        @endif
+        @if($movie->content_kkphim)
+            <div class="text-sm text-violet-500 dark:text-slate-100 leading-5 rounded-full mb-2 px-2 text-center">
+                KK
+            </div>
+        @endif
+    </td>
+    <td class="px-3 py-4 whitespace-nowrap">
         <div class="text-sm text-violet-500 dark:text-slate-100 leading-5 rounded-full mb-2 px-2 text-center">
             {{ $movie->publish_year }}</div>
     </td>

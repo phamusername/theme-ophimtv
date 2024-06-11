@@ -47,17 +47,34 @@
                     </select>
                 </div>
                 <div class="p-2">
-                    <select name="filter[region]" form="form-filter" class="bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-white p-2 rounded-md outline-none" id="city_id">
+                    <select name="filter[region]" form="form-filter"
+                        class="bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-white p-2 rounded-md outline-none"
+                        id="city_id">
                         <option value="">Quốc gia</option>
                         @foreach (\Ophim\Core\Models\Region::fromCache()->all() as $item)
-                            <option value="{{ $item->id }}" @if ((isset(request('filter')['region']) && request('filter')['region'] == $item->id) ||
-                                (isset($region) && $region->id == $item->id)) selected @endif>
+                            <option value="{{ $item->id }}" @if (
+                                (isset(request('filter')['region']) && request('filter')['region'] == $item->id) ||
+                                    (isset($region) && $region->id == $item->id)) selected @endif>
                                 {{ $item->name }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="p-2">
-                    <select name="filter[year]" form="form-filter" class="bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-white p-2 rounded-md outline-none" id="year">
+                    <select name="filter[source]" form="form-filter"
+                        class="bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-white p-2 rounded-md outline-none"
+                        id="source">
+                        <option value="">Nguồn hỗ trợ</option>
+                        <option value="content_ophim" @if (isset(request('filter')['source']) && request('filter')['source'] == 'content_ophim') selected @endif>Ophim</option>
+                        <option value="content_nguonc" @if (isset(request('filter')['source']) && request('filter')['source'] == 'content_nguonc') selected @endif>NguonC</option>
+                        <option value="content_kkphim" @if (isset(request('filter')['source']) && request('filter')['source'] == 'content_kkphim') selected @endif>KKPhim
+                        </option>
+                    </select>
+                </div>
+
+                <div class="p-2">
+                    <select name="filter[year]" form="form-filter"
+                        class="bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-white p-2 rounded-md outline-none"
+                        id="year">
                         <option value="">Năm</option>
                         @foreach ($years as $year)
                             <option value="{{ $year }}" @if (isset(request('filter')['year']) && request('filter')['year'] == $year) selected @endif>

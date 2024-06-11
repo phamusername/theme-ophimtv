@@ -51,7 +51,8 @@
                 </li>
                 <li class="flex items-center" itemprop="itemListElement" itemscope="true"
                     itemtype="http://schema.org/ListItem">
-                    <a itemprop="item" class="ajax-load" title="Trang {{ $data->currentPage() }}" href="https://phim.nguonc.com/the-loai/hoat-hinh">
+                    <a itemprop="item" class="ajax-load" title="Trang {{ $data->currentPage() }}"
+                        href="https://phim.nguonc.com/the-loai/hoat-hinh">
                         <span class="font-semibold text-slate-900 truncate dark:text-slate-200 hover:text-sky-500"
                             itemprop="name">Trang {{ $data->currentPage() }}</span>
                         <meta itemprop="position" value="end" content="3">
@@ -80,6 +81,9 @@
                                         <th scope="col"
                                             class="px-3 py-3 text-center text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                                             Định dạng</th>
+                                        <th scope="col"
+                                            class="px-3 py-3 text-center text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
+                                            Nguồn hỗ trợ</th>
                                         <th scope="col"
                                             class="px-3 py-3 text-center text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                                             Năm</th>

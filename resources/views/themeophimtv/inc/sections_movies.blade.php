@@ -16,6 +16,9 @@
                                 Định dạng</th>
                             <th scope="col"
                                 class="px-3 py-3 text-center text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
+                                Nguồn hỗ trợ</th>
+                            <th scope="col"
+                                class="px-3 py-3 text-center text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                                 Năm</th>
                             <th scope="col"
                                 class="px-3 py-3 text-center text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">

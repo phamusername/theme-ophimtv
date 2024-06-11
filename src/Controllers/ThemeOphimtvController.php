@@ -20,71 +20,72 @@ class ThemeOphimtvController
 {
 
     public function index(Request $request)
-{
-    if ($request['search'] || $request['filter']) {
-        $data = Movie::when(!empty($request['filter']['category']), function ($movie) use ($request) {
-            $movie->whereHas('categories', function ($categories) use ($request) {
-                $categories->where('id', $request['filter']['category']);
-            });
-        })->when(!empty($request['filter']['region']), function ($movie) use ($request) {
-            $movie->whereHas('regions', function ($regions) use ($request) {
-                $regions->where('id', $request['filter']['region']);
-            });
-        })->when(!empty($request['filter']['year']), function ($movie) use ($request) {
-            $movie->where('publish_year', $request['filter']['year']);
-        })->when(!empty($request['filter']['type']), function ($movie) use ($request) {
-            $movie->where('type', $request['filter']['type']);
-        })->when(!empty($request['search']), function ($query) use ($request) {
-            $query->where(function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request['search'] . '%')
-                    ->orWhere('origin_name', 'like', '%' . $request['search'] . '%')
-                    ->orWhere('publish_year', 'like', '%' . $request['search'] . '%');
+    {
+        if ($request['search'] || $request['filter']) {
+            $data = Movie::when(!empty($request['filter']['category']), function ($movie) use ($request) {
+                $movie->whereHas('categories', function ($categories) use ($request) {
+                    $categories->where('id', $request['filter']['category']);
+                });
+            })->when(!empty($request['filter']['region']), function ($movie) use ($request) {
+                $movie->whereHas('regions', function ($regions) use ($request) {
+                    $regions->where('id', $request['filter']['region']);
+                });
+            })->when(!empty($request['filter']['source']), function ($movie) use ($request) {
+                $sourceColumn = $request['filter']['source'];
+                $movie->whereNotNull($sourceColumn);
+            })->when(!empty($request['filter']['year']), function ($movie) use ($request) {
+                $movie->where('publish_year', $request['filter']['year']);
+            })->when(!empty($request['filter']['type']), function ($movie) use ($request) {
+                $movie->where('type', $request['filter']['type']);
+            })->when(!empty($request['search']), function ($query) use ($request) {
+                $query->where(function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request['search'] . '%')
+                        ->orWhere('origin_name', 'like', '%' . $request['search'] . '%')
+                        ->orWhere('publish_year', 'like', '%' . $request['search'] . '%');
 
-                // Check if the search term contains 'phim bộ' and filter type=series
-                if (stripos($request['search'], 'phim bộ') !== false || stripos($request['search'], 'phim bo') !== false) {
-                    $query->orWhere('type', 'series');
+                    if (stripos($request['search'], 'phim bộ') !== false || stripos($request['search'], 'phim bo') !== false) {
+                        $query->orWhere('type', 'series');
+                    }
+
+                    if (stripos($request['search'], 'phim lẻ') !== false || stripos($request['search'], 'phim le') !== false) {
+                        $query->orWhere('type', 'single');
+                    }
+                })->orderBy('name', 'desc');
+            })->when(!empty($request['filter']['sort']), function ($movie) use ($request) {
+                if ($request['filter']['sort'] == 'create') {
+                    return $movie->orderBy('created_at', 'desc');
                 }
-
-                if (stripos($request['search'], 'phim lẻ') !== false || stripos($request['search'], 'phim le') !== false) {
-                    $query->orWhere('type', 'single');
+                if ($request['filter']['sort'] == 'update') {
+                    return $movie->orderBy('updated_at', 'desc');
                 }
-            })->orderBy('name', 'desc');
-        })->when(!empty($request['filter']['sort']), function ($movie) use ($request) {
-            if ($request['filter']['sort'] == 'create') {
-                return $movie->orderBy('created_at', 'desc');
-            }
-            if ($request['filter']['sort'] == 'update') {
-                return $movie->orderBy('updated_at', 'desc');
-            }
-            if ($request['filter']['sort'] == 'year') {
-                return $movie->orderBy('publish_year', 'desc');
-            }
-            if ($request['filter']['sort'] == 'view') {
-                return $movie->orderBy('view_total', 'desc');
-            }
-        })->paginate();
+                if ($request['filter']['sort'] == 'year') {
+                    return $movie->orderBy('publish_year', 'desc');
+                }
+                if ($request['filter']['sort'] == 'view') {
+                    return $movie->orderBy('view_total', 'desc');
+                }
+            })->paginate();
 
-        // Log the data for debugging
-        \Log::info($data);
+            \Log::info($data);
 
-        return view('themes::themeophimtv.catalog', [
-            'data' => $data,
-            'search' => $request['search'],
-            'section_name' => "Tìm kiếm phim: $request->search"
+            return view('themes::themeophimtv.catalog', [
+                'data' => $data,
+                'search' => $request['search'],
+                'section_name' => "Tìm kiếm phim: $request->search"
+            ]);
+        }
+
+        $count_movies = DB::table('movies')->count();
+        $today = Carbon::today();
+        $updatedTodayCount = Movie::whereDate('updated_at', $today)->count();
+
+        return view('themes::themeophimtv.index', [
+            'title' => Setting::get('site_homepage_title'),
+            'count_movies' => $count_movies,
+            'updatedTodayCount' => $updatedTodayCount
         ]);
     }
 
-    // Get the total count of movies
-    $count_movies = DB::table('movies')->count();
-    $today = Carbon::today();
-    $updatedTodayCount = Movie::whereDate('updated_at', $today)->count();
-
-    return view('themes::themeophimtv.index', [
-        'title' => Setting::get('site_homepage_title'),
-        'count_movies' => $count_movies,
-        'updatedTodayCount' => $updatedTodayCount
-    ]);
-}
 
 
     public function search(Request $request, string $search)
@@ -93,7 +94,7 @@ class ThemeOphimtvController
             ->orWhere('origin_name', 'like', '%' . $search . '%')
             ->orWhere('publish_year', 'like', '%' . $search . '%')
             ->orderBy('name', 'desc')
-            ->take(10)
+            ->take(5)
             ->get();
 
         foreach ($data as $key => &$item) {
