@@ -36,11 +36,11 @@
 
                                         <div class="ml-4 my-2"><span
                                                 class="px-1 py-0.5 mr-2 rounded-md bg-sky-500 text-white cursor-pointer">GET</span><span
-                                                class="font-semibold text-indigo-500">https://{{ request()->getHost() }}/danh-sach/phim-moi-cap-nhat?page=${page}</span><span
+                                                class="font-semibold text-indigo-500">https://{{ request()->getHost() }}/api/danh-sach/phim-moi-cap-nhat?page=${page}</span><span
                                                 class="font-semibold text-red-500 disable">${slug}</span></div>
 
                                         <div class="ml-4 space-x-2"><span>Ví dụ:
-                                                https://{{ request()->getHost() }}/danh-sach/phim-moi-cap-nhat?page=1</span>
+                                                https://{{ request()->getHost() }}/api/danh-sach/phim-moi-cap-nhat?page=1</span>
                                         </div>
                                     </div>
                                 </div>
@@ -49,7 +49,7 @@
                                 <button
                                     class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200"
                                     type="button" aria-expanded="true">
-                                    <span>Danh sách phim</span>
+                                    <span>Phim & tập phim</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                         aria-hidden="true" class="transform rotate-180 w-5 h-5 text-sky-500">
                                         <path fill-rule="evenodd"
@@ -65,14 +65,71 @@
 
                                         <div class="ml-4 my-2"><span
                                                 class="px-1 py-0.5 mr-2 rounded-md bg-sky-500 text-white cursor-pointer">GET</span><span
-                                                class="font-semibold text-indigo-500">https://{{ request()->getHost() }}/phim/${slug}</span><span
+                                                class="font-semibold text-indigo-500">https://{{ request()->getHost() }}/api/phim/${slug}</span><span
                                                 class="font-semibold text-red-500 disable">${slug}</span></div>
 
                                         <div class="ml-4 space-x-2">
                                             <div class="ml-4 space-x-2">
                                                 <span>Ví dụ:
                                                     https://{{ request()->getHost() }}/phim/hoa-thien-cot</span>
-                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-0 card-collapse">
+                                <button
+                                    class="toggle-content flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-sky-900 bg-sky-300 dark:text-sky-400 dark:bg-sky-900 rounded-lg hover:bg-sky-200"
+                                    type="button" aria-expanded="true">
+                                    <span>Thể loại, quốc gia, năm</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                        aria-hidden="true" class="transform rotate-180 w-5 h-5 text-sky-500">
+                                        <path fill-rule="evenodd"
+                                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                <div class="card-collapse-content px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-200">
+                                    <div class="w-full max-w-3xl px-2 sm:px-0">
+                                        <h2
+                                            class="sm:text-xl text-lg text-slate-900 font-bold tracking-tight dark:text-slate-50 ">
+                                            Phim theo thể loại</h2>
+
+                                        <div class="ml-4 my-2">
+                                            <span
+                                                class="px-1 py-0.5 mr-2 rounded-md bg-sky-500 text-white cursor-pointer">GET</span>
+                                            <span
+                                                class="font-semibold text-indigo-500">https://{{ request()->getHost() }}/api/danh-sach/the-loai/
+                                                <span
+                                                    class="font-semibold text-red-500 disable">${slug}</span>?page=</span>
+                                            <span class="font-semibold text-red-500 disable">${slug}</span>
+                                        </div>
+
+                                        <div class="ml-4 space-x-2">
+                                            <div class="ml-4 space-x-2">
+                                                <span>Ví dụ: https://{{ request()->getHost() }}/api/danh-sach/the-loai/hanh-dong?page=1</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-full max-w-3xl px-2 sm:px-0">
+                                        <h2
+                                            class="sm:text-xl text-lg text-slate-900 font-bold tracking-tight dark:text-slate-50 ">
+                                            Phim theo năm</h2>
+
+                                        <div class="ml-4 my-2">
+                                            <span
+                                                class="px-1 py-0.5 mr-2 rounded-md bg-sky-500 text-white cursor-pointer">GET</span>
+                                            <span
+                                                class="font-semibold text-indigo-500">https://{{ request()->getHost() }}/api/danh-sach/nam/
+                                                <span
+                                                    class="font-semibold text-red-500 disable">${slug}</span>?page=</span>
+                                            <span class="font-semibold text-red-500 disable">${slug}</span>
+                                        </div>
+
+                                        <div class="ml-4 space-x-2">
+                                            <div class="ml-4 space-x-2">
+                                                <span>Ví dụ: https://{{ request()->getHost() }}/api/danh-sach/nam/2024?page=1</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

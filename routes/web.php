@@ -59,4 +59,6 @@ Route::group([
         ->name('movies.show');
     Route::get('/search/{search}', [ThemeOphimtvController::class, 'search'])->name('search');
     Route::get('/api-document', [ThemeOphimtvController::class, 'document'])->name('document');
+    Route::get('/khieu-nai-ban-quyen', [ThemeOphimtvController::class, 'copyright'])->name('copyright');
+    Route::get('/gioi-thieu', [ThemeOphimtvController::class, 'about'])->name('about');
 });

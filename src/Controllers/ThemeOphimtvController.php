@@ -358,4 +358,14 @@ class ThemeOphimtvController
     {
         return view("themes::themeophimtv.pages.document");
     }
+
+    public function copyright()
+    {
+        return view("themes::themeophimtv.pages.copyright");
+    }
+
+    public function about()
+    {
+        return view("themes::themeophimtv.pages.about");
+    }
 }
