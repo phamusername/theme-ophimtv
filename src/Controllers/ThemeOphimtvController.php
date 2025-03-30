@@ -368,4 +368,218 @@ class ThemeOphimtvController
     {
         return view("themes::themeophimtv.pages.about");
     }
+
+    public function phimMoiCapNhat(Request $request)
+    {
+        $page = max(1, (int) $request->query('page', 1));
+        $perPage = 10;
+
+        $movies = Movie::orderBy('updated_at', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        $formattedMovies = $movies->map(function ($movie) {
+            return [
+                "tmdb" => [
+                    "type" => $movie->tmdb_type ?? "",
+                    "id" => $movie->tmdb_id ?? "",
+                    "season" => $movie->tmdb_season ?? null,
+                    "vote_average" => $movie->tmdb_vote_average ?? 0,
+                    "vote_count" => $movie->tmdb_vote_count ?? 0
+                ],
+                "imdb" => [
+                    "id" => $movie->imdb_id ?? ""
+                ],
+                "modified" => [
+                    "time" => optional($movie->updated_at)->toISOString()
+                ],
+                // "_id" => hash('sha256', (string) $movie->id),
+                "_id" => substr(sha1((string) $movie->id), 0, 24),
+                "name" => $movie->name,
+                "slug" => $movie->slug,
+                "origin_name" => $movie->origin_name,
+                "thumb_url" => $movie->thumb_url,
+                "poster_url" => $movie->poster_url,
+                "year" => $movie->publish_year,
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'items' => $formattedMovies,
+            'pagination' => [
+                'totalItems' => $movies->total(),
+                'totalItemsPerPage' => $movies->perPage(),
+                'currentPage' => $movies->currentPage(),
+                'totalPages' => $movies->lastPage()
+            ]
+        ]);
+    }
+
+    /**
+     * Get movie details by id with formatted output.
+     *
+     * @param Request $request
+     * @param mixed $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPhimBySlug(Request $request, $slug)
+    {
+        // Eager load related models: categories, regions, episodes, actors, directors
+        $movie = Movie::with(['categories', 'regions', 'episodes', 'actors', 'directors'])
+            ->where('slug', $slug)
+            ->first();
+
+        if (!$movie) {
+            return response()->json([
+                'status' => false,
+                'msg'    => 'Movie not found'
+            ], 404);
+        }
+
+        // Format movie data as required
+        $movieData = [
+            "tmdb" => [
+                "type"         => $movie->tmdb_type ?? "",
+                "id"           => $movie->tmdb_id ?? "",
+                "season"       => $movie->tmdb_season ?? null,
+                "vote_average" => $movie->tmdb_vote_average ?? 0,
+                "vote_count"   => $movie->tmdb_vote_count ?? 0,
+            ],
+            "imdb" => [
+                "id" => $movie->imdb_id ?? "",
+            ],
+            "created" => [
+                "time" => $movie->created_at->toISOString(),
+            ],
+            "modified" => [
+                // Use modified_time if available, otherwise fallback to updated_at
+                "time" => $movie->updated_at->toISOString(),
+            ],
+            // Hash the movie id using SHA-256
+            // "_id" => hash('sha256', (string) $movie->id),
+            "_id" => substr(sha1((string) $movie->id), 0, 24),
+            "name" => $movie->name,
+            "slug" => $movie->slug,
+            "origin_name" => $movie->origin_name,
+            "content" => $movie->content,
+            "type" => $movie->type,
+            "status" => $movie->status,
+            "thumb_url" => $movie->thumb_url,
+            "poster_url" => $movie->poster_url,
+            "is_copyright" => $movie->is_copyright,
+            "sub_docquyen" => $movie->sub_docquyen,
+            "chieurap" => $movie->is_shown_in_theater,
+            "trailer_url" => $movie->trailer_url,
+            "time" => $movie->episode_time,
+            "episode_current" => $movie->episode_current,
+            "episode_total" => $movie->episode_total,
+            "quality" => $movie->quality,
+            "lang" => $movie->language,
+            "notify" => $movie->notify,
+            "showtimes" => $movie->showtimes,
+            "year" => $movie->publish_year,
+            "view" => $movie->view,
+            // Get actors and directors names as an array
+            "actor" => $movie->actors->pluck('name')->toArray(),
+            "director" => $movie->directors->pluck('name')->toArray(),
+            // Map categories with hashed ids
+            "category" => $movie->categories->map(function ($cat) {
+                return [
+                    // "id"   => hash('sha256', (string) $cat->id),
+                    "id"   => substr(sha1((string) $cat->id),0,24),
+                    "name" => $cat->name,
+                    "slug" => $cat->slug,
+                ];
+            })->toArray(),
+            // Map regions as country data with hashed ids
+            "country" => $movie->regions->map(function ($region) {
+                return [
+                    // "id"   => hash('sha256', (string) $region->id),
+                    "id"   => substr(sha1((string) $region->id), 0, 24),
+                    "name" => $region->name,
+                    "slug" => $region->slug,
+                ];
+            })->toArray(),
+        ];
+
+        // Group episodes by server (assuming 'server' is the field for grouping)
+        $groupedEpisodes = $movie->episodes->groupBy('server')->map(function ($group, $serverName) {
+            // Group episodes within the server by slug
+            $serverData = $group->groupBy('slug')->map(function ($episodeGroup, $slug) {
+                // Use the first episode record as a base for common fields
+                $firstEpisode = $episodeGroup->first();
+                $result = [
+                    "name"       => $firstEpisode->name,
+                    "slug"       => $slug,
+                    "filename"   => $firstEpisode->filename,
+                    "link_m3u8"  => null,
+                    "link_embed" => null,
+                ];
+                // Iterate over the group to update links
+                foreach ($episodeGroup as $episode) {
+                    if ($episode->type != 'embed') {
+                        $result["link_m3u8"] = $episode->link;
+                    }
+                    if ($episode->type == 'embed') {
+                        $result["link_embed"] = $episode->link;
+                    }
+                }
+                return $result;
+            })->values();
+
+            return [
+                "server_name" => $serverName,
+                "server_data" => $serverData,
+            ];
+        })->values();
+
+        return response()->json([
+            "status"   => true,
+            "msg"      => "",
+            "movie"    => $movieData,
+            "episodes" => $groupedEpisodes,
+        ]);
+    }
+
+    /**
+     * Get list of countries.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getQuocGia(Request $request)
+    {
+        $countries = Region::all();
+        $formatted = $countries->map(function ($country) {
+            return [
+                // "_id"  => hash('sha256', (string)$country->id), 
+                "_id"  => substr(sha1((string)$country->id), 0, 24),
+                "name" => $country->name,
+                "slug" => $country->slug,
+            ];
+        });
+
+        return response()->json($formatted);
+    }
+
+    /**
+     * Get list of categories.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTheLoai(Request $request)
+    {
+        $categories = Category::all();
+        $formatted = $categories->map(function ($category) {
+            return [
+                // "_id"  => hash('sha256', (string)$category->id),
+                "_id"  => substr(sha1((string)$category->id), 0, 24),
+                "name" => $category->name,
+                "slug" => $category->slug,
+            ];
+        });
+
+        return response()->json($formatted);
+    }
 }

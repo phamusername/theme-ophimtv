@@ -61,4 +61,10 @@ Route::group([
     Route::get('/api-document', [ThemeOphimtvController::class, 'document'])->name('document');
     Route::get('/khieu-nai-ban-quyen', [ThemeOphimtvController::class, 'copyright'])->name('copyright');
     Route::get('/gioi-thieu', [ThemeOphimtvController::class, 'about'])->name('about');
+    Route::get('/api/danh-sach/phim-moi-cap-nhat', [ThemeOphimtvController::class, 'phimMoiCapNhat']);
+    Route::get('/api/phim/{slug}', [ThemeOphimtvController::class, 'getPhimBySlug']);
+
+    // Add API routes for countries and categories
+    Route::get('/api/quoc-gia', [ThemeOphimtvController::class, 'getQuocGia']);
+    Route::get('/api/the-loai', [ThemeOphimtvController::class, 'getTheLoai']);
 });
