@@ -84,7 +84,7 @@
                                     Lấy Nguồn</div>
                                 <div
                                     class="cursor-pointer hover:bg-opacity-80 bg-blue-500 text-gray-50 dark:text-gray-50 inline-block px-1 py-1 rounded">
-                                    <a target="_blank" href="{{ $currentMovie->getUrl() }}"
+                                    <a target="_blank" href="{{ url('/api' . parse_url($currentMovie->getUrl(), PHP_URL_PATH)) }}"
                                         title="API Phim {{ $currentMovie->name }}" rel="noopener noreferrer">API</a>
                                 </div>
                             </div>
