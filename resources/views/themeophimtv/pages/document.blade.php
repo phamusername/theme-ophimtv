@@ -99,19 +99,38 @@
                                             <span
                                                 class="px-1 py-0.5 mr-2 rounded-md bg-sky-500 text-white cursor-pointer">GET</span>
                                             <span
-                                                class="font-semibold text-indigo-500">https://{{ request()->getHost() }}/api/danh-sach/the-loai/
+                                                class="font-semibold text-indigo-500">https://{{ request()->getHost() }}/api/the-loai/
                                                 <span
-                                                    class="font-semibold text-red-500 disable">${slug}</span>?page=</span>
-                                            <span class="font-semibold text-red-500 disable">${slug}</span>
+                                                    class="font-semibold text-red-500 disable">${slug}</span>
                                         </div>
 
                                         <div class="ml-4 space-x-2">
                                             <div class="ml-4 space-x-2">
-                                                <span>Ví dụ: https://{{ request()->getHost() }}/api/danh-sach/the-loai/hanh-dong?page=1</span>
+                                                <span>Ví dụ: https://{{ request()->getHost() }}/api/the-loai/hanh-dong</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="w-full max-w-3xl px-2 sm:px-0">
+                                        <h2
+                                            class="sm:text-xl text-lg text-slate-900 font-bold tracking-tight dark:text-slate-50 ">
+                                            Phim theo quốc gia</h2>
+
+                                        <div class="ml-4 my-2">
+                                            <span
+                                                class="px-1 py-0.5 mr-2 rounded-md bg-sky-500 text-white cursor-pointer">GET</span>
+                                            <span
+                                                class="font-semibold text-indigo-500">https://{{ request()->getHost() }}/api/quoc-gia/
+                                                <span
+                                                    class="font-semibold text-red-500 disable">${slug}</span>
+                                        </div>
+
+                                        <div class="ml-4 space-x-2">
+                                            <div class="ml-4 space-x-2">
+                                                <span>Ví dụ: https://{{ request()->getHost() }}/api/quoc-gia/han-quoc</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="w-full max-w-3xl px-2 sm:px-0">
                                         <h2
                                             class="sm:text-xl text-lg text-slate-900 font-bold tracking-tight dark:text-slate-50 ">
                                             Phim theo năm</h2>
@@ -131,7 +150,7 @@
                                                 <span>Ví dụ: https://{{ request()->getHost() }}/api/danh-sach/nam/2024?page=1</span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
